@@ -22,32 +22,39 @@ export default function EncargadosTable() {
 
   return (
     <div className="bg-white rounded shadow p-6 w-full">
-      <div className="flex justify-between mb-4">
-        <input
-          className="border rounded px-2 py-1 w-1/3"
-          placeholder="Buscar encargado..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h2 className="text-xl font-bold">Gestión de Encargados de Cuadrilla</h2>
+          <p className="text-[#737373]">Agrega, edita o elimina encargados de cuadrilla</p>
+        </div>
         {/* Botón de ejemplo, puedes agregar modal para agregar */}
         <button className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
           <UserPlus className="h-4 w-4" />
           Agregar Encargado
         </button>
       </div>
-      <table className="w-full text-left border">
+      <div className="flex justify-start items-start mb-4">
+        <input
+          className="border rounded px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
+          placeholder="Buscar encargado..."
+          value={busqueda}
+          type="search"
+          onChange={e => setBusqueda(e.target.value)}
+        />
+      </div>
+      <table className="w-full text-left">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">ID</th>
-            <th className="p-2">Nombre</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Cosechadores</th>
-            <th className="p-2 text-right">Acciones</th>
+          <tr className="font-light border-b">
+            <th className="p-2 text-[#737373] font-medium">ID</th>
+            <th className="p-2 text-[#737373] font-medium">Nombre</th>
+            <th className="p-2 text-[#737373] font-medium">Email</th>
+            <th className="p-2 text-[#737373] font-medium">Cosechadores</th>
+            <th className="p-2 text-right text-[#737373] font-medium">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {encargadosFiltrados.map(e => (
-            <tr key={e.id} className="border-t">
+            <tr key={e.id} className="border-b">
               <td className="p-2">{e.id}</td>
               <td className="p-2">{e.nombre}</td>
               <td className="p-2">{e.email}</td>
