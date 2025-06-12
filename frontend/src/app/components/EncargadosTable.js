@@ -21,21 +21,21 @@ export default function EncargadosTable() {
   )
 
   return (
-    <div className="bg-white rounded shadow p-6 w-full">
+    <div className="bg-white rounded-sm shadow-sm p-6 w-full">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h2 className="text-xl font-bold">Gestión de Encargados de Cuadrilla</h2>
           <p className="text-[#737373]">Agrega, edita o elimina encargados de cuadrilla</p>
         </div>
         {/* Botón de ejemplo, puedes agregar modal para agregar */}
-        <button className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        <button className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700">
           <UserPlus className="h-4 w-4" />
           Agregar Encargado
         </button>
       </div>
       <div className="flex justify-start items-start mb-4">
         <input
-          className="border rounded px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
+          className="border rounded-sm px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
           placeholder="Buscar encargado..."
           value={busqueda}
           type="search"
@@ -60,8 +60,8 @@ export default function EncargadosTable() {
               <td className="p-2">{e.email}</td>
               <td className="p-2">{e.cosechadores}</td>
               <td className="p-2 flex justify-end gap-2">
-                <button className="p-1 hover:bg-gray-200 rounded"><Edit className="h-4 w-4" /></button>
-                <button className="p-1 hover:bg-gray-200 rounded"><Trash className="h-4 w-4" /></button>
+                <button className="p-1 hover:bg-gray-200 rounded-sm"><Edit className="h-4 w-4" /></button>
+                <button className="p-1 hover:bg-gray-200 rounded-sm"><Trash className="h-4 w-4" /></button>
               </td>
             </tr>
           ))}

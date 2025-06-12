@@ -18,7 +18,7 @@ export default function VistaCuadrilla() {
     })
 
     return (
-        <section className="bg-white rounded shadow p-6">
+        <section className="bg-white rounded-sm shadow-sm p-6">
             <header className="mb-6">
                 <h2 className="text-2xl font-bold">Escaneo de Capachos</h2>
                 <p className="text-gray-500">Escanea el código QR de cada capacho lleno para registrar la entrega</p>
