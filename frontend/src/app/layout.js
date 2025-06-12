@@ -1,10 +1,5 @@
-import { Inter } from "next/font/google";
+import '@fontsource-variable/inter';
 import "../styles/globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Create Next App",
@@ -14,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={""}>
         {children}
       </body>
     </html>
