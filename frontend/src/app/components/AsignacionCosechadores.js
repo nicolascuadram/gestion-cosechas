@@ -60,7 +60,7 @@ export default function AsignacionCosechadores() {
   })
 
   return (
-    <div className="bg-white rounded shadow p-6 w-full">
+    <div className="bg-white rounded-sm shadow-sm p-6 w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-1">Asignación de Cosechadores</h2>
         <p className="text-gray-500 mb-4">Asigna cosechadores a encargados de cuadrilla</p>
@@ -68,14 +68,14 @@ export default function AsignacionCosechadores() {
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
             <input
-              className="border rounded px-8 py-2 w-full"
+              className="border rounded-sm px-8 py-2 w-full"
               placeholder="Buscar por nombre o documento..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </div>
           <select
-            className="border rounded px-4 py-2 min-w-[180px]"
+            className="border rounded-sm px-4 py-2 min-w-[180px]"
             value={filtroEncargado}
             onChange={(e) => setFiltroEncargado(e.target.value)}
           >
@@ -114,7 +114,7 @@ export default function AsignacionCosechadores() {
                 </td>
                 <td className="p-2">
                   <select
-                    className="border rounded px-2 py-1"
+                    className="border rounded-sm px-2 py-1"
                     value={encargadoSeleccionado}
                     onChange={(e) => setEncargadoSeleccionado(e.target.value)}
                   >
@@ -129,7 +129,7 @@ export default function AsignacionCosechadores() {
                 <td className="p-2 text-right">
                   <div className="flex justify-end gap-2">
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-green-700 hover:bg-green-100 disabled:opacity-50"
+                      className="flex items-center gap-1 border rounded-sm px-3 py-1 text-green-700 hover:bg-green-100 disabled:opacity-50"
                       onClick={() => handleAsignarEncargado(cosechador.id)}
                       disabled={!encargadoSeleccionado}
                     >
@@ -137,7 +137,7 @@ export default function AsignacionCosechadores() {
                       Asignar
                     </button>
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-red-700 hover:bg-red-100 disabled:opacity-50"
+                      className="flex items-center gap-1 border rounded-sm px-3 py-1 text-red-700 hover:bg-red-100 disabled:opacity-50"
                       onClick={() => handleQuitarEncargado(cosechador.id)}
                       disabled={!cosechador.encargadoId}
                     >

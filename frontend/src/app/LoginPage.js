@@ -31,16 +31,16 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6]">
-      <div className="bg-white rounded shadow-md p-8 w-full max-w-md border border-[#e2e2e2]">
+      <div className="bg-white rounded-sm shadow-md p-8 w-full max-w-md border border-[#e2e2e2]">
         <div className="flex flex-col items-center mb-6">
           <img src="/logo.jpg" alt="Logo" className="h-20 w-20 mb-2 rounded-full" />
-          <h1 class="text-4xl w-full py-2 font-bold text-transparent italic text-center bg-clip-text bg-gradient-to-r from-[#16a34a] to-lime-400">
+          <h1 className="text-4xl w-full py-2 font-bold text-transparent italic text-center bg-clip-text bg-linear-to-r from-[#16a34a] to-lime-400">
             AgroGestor Digital
           </h1>
           <p className="text-gray-500 text-center">Ingresa tus credenciales para acceder al sistema</p>
         </div>
         {error && (
-          <div className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+          <div className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-sm mb-4">
             <AlertCircle className="h-4 w-4" />
             <span>{error}</span>
           </div>
@@ -51,7 +51,7 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
-              className="border rounded px-3 py-2 w-full outline-[#16a34a]"
+              className="border rounded-sm px-3 py-2 w-full outline-[#16a34a]"
               placeholder="correo@ejemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -63,7 +63,7 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
-              className="border rounded px-3 py-2 w-full outline-[#16a34a]"
+              className="border rounded-sm px-3 py-2 w-full outline-[#16a34a]"
               placeholder="Ingresa tu contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -72,7 +72,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded flex items-center justify-center"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-sm flex items-center justify-center"
             disabled={loading}
           >
             {loading ? (
@@ -88,7 +88,7 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500 mb-2">¿Eres jefe de cuadrilla y no tienes cuenta?</p>
           <Link href="/registro-encargado">
-            <button className="w-full border rounded py-2 mt-1 hover:bg-gray-100 font-medium">
+            <button className="w-full border rounded-sm py-2 mt-1 hover:bg-gray-100 font-medium">
               Registrarse como Jefe de Cuadrilla
             </button>
           </Link>
