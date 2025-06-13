@@ -40,4 +40,78 @@ export const createTipo_cosecha = async (ctx: Context) => {
   }
 };
 
+// Editar un tipo_cosecha por ID
+export const updateTipo_cosecha = async (ctx: Context) => {
+  try {
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "Falta el ID en la URL" };
+      return;
+    }
+
+    if (ctx.request.hasBody) {
+      const body = await ctx.request.body.json();
+      const { nombre, descripcion, precio_por_capacho } = body;
+
+      if (!nombre || !descripcion || !precio_por_capacho) {
+        ctx.response.status = 400;
+        ctx.response.body = { message: "Faltan campos obligatorios" };
+        return;
+      }
+
+      const result = await client.queryObject(
+        `UPDATE tipo_cosecha 
+         SET nombre = $1, descripcion = $2, precio_por_capacho = $3
+         WHERE id = $4`,
+        [nombre, descripcion, precio_por_capacho, id]
+      );
+
+      if (result.rowCount && result.rowCount > 0) {
+        ctx.response.status = 200;
+        ctx.response.body = { message: "Tipo de cosecha actualizado exitosamente" };
+      } else {
+        ctx.response.status = 404;
+        ctx.response.body = { message: "Tipo de cosecha no encontrado" };
+      }
+    } else {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "Body no enviado o vacío" };
+    }
+  } catch (error) {
+    console.error("Error al actualizar tipo_cosecha:", error);
+    ctx.response.status = 500;
+    ctx.response.body = { message: "Error al actualizar tipo_cosecha", error: error.message };
+  }
+};
+
+// Eliminar un tipo_cosecha por ID
+export const deleteTipo_cosecha = async (ctx: Context) => {
+  try {
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "Falta el ID en la URL" };
+      return;
+    }
+
+    const result = await client.queryObject(
+      `DELETE FROM tipo_cosecha WHERE id = $1`,
+      [id]
+    );
+
+    if (result.rowCount && result.rowCount > 0) {
+      ctx.response.status = 200;
+      ctx.response.body = { message: "Tipo de cosecha eliminado exitosamente" };
+    } else {
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Tipo de cosecha no encontrado" };
+    }
+  } catch (error) {
+    console.error("Error al eliminar tipo_cosecha:", error);
+    ctx.response.status = 500;
+    ctx.response.body = { message: "Error al eliminar tipo_cosecha", error: error.message };
+  }
+};
+
 
