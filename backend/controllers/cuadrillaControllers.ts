@@ -23,6 +23,31 @@ export const getCuadrillas = async (ctx: Context) => {
   ctx.response.body = cuadrillasConCosechadores;
 };
 
+export const getMiCuadrilla = async (ctx: Context) => {
+  const idEncargado = ctx.params.idEncargado;
+  const cuadrillas = await client.queryObject(`
+    SELECT c.id, c.nombre, c.id_encargado, e.nombre AS encargado_nombre, e.p_apellido AS encargado_p_apellido
+    FROM cuadrilla c
+    LEFT JOIN encargados e ON c.id_encargado = e.id
+    WHERE c.id_encargado = $1
+    ORDER BY c.id
+  `, [idEncargado]);
+
+  if (cuadrillas.rows.length === 0) {
+    ctx.response.status = 404;
+    ctx.response.body = { message: "No tienes cuadrilla asignada" };
+    return;
+  }
+
+  // Solo debería haber una cuadrilla por encargado
+  const cuadrilla = cuadrillas.rows[0];
+  const cosechadores = await client.queryObject(`
+    SELECT id, nombre, p_apellido, id_cuadrilla FROM cosechador WHERE id_cuadrilla = $1
+  `, [cuadrilla.id]);
+
+  ctx.response.body = { ...cuadrilla, cosechadores: cosechadores.rows };
+};
+
 // Crear cuadrilla
 export const createCuadrilla = async (ctx: Context) => {
   if(ctx.request.hasBody) {

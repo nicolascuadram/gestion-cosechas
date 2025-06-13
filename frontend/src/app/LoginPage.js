@@ -17,16 +17,46 @@ export default function LoginPage() {
     setLoading(true)
     setError("")
 
-    setTimeout(() => {
+    // Pruebas rápidas
+    if (email === "admin@cosecha.com" && password === "admin") {
       setLoading(false)
-      if (email === "admin@cosecha.com" && password === "admin") {
-        router.push("/admin/dashboard")
-      } else if (email === "encargado@cosecha.com" && password === "encargado") {
+      router.push("/admin/dashboard")
+      return
+    }
+    if (email === "encargado@cosecha.com" && password === "encargado") {
+      setLoading(false)
+      router.push("/jefeCuadrilla/dashboard")
+      return
+    }
+
+    // Login real
+    try {
+      console.log("Iniciando sesión con:", { email, password })
+      const res = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.message || "Error de autenticación")
+        setLoading(false)
+        return
+      }
+      const data = await res.json()
+      // Guarda la sesión (puedes usar localStorage, cookies, o context)
+      localStorage.setItem("user", JSON.stringify(data.user))
+      // Redirige según tipo
+      if (data.tipo === "encargado") {
         router.push("/jefeCuadrilla/dashboard")
       } else {
-        setError("Credenciales incorrectas. Por favor, inténtalo de nuevo.")
+        // Por si agregas otros tipos en el futuro
+        router.push("/")
       }
-    }, 1000)
+    } catch {
+      setError("Error de conexión")
+    }
+    setLoading(false)
   }
 
   return (

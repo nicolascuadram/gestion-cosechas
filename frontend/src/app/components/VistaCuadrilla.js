@@ -1,56 +1,49 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, User, Calendar, Package } from "lucide-react"
 
-// Datos hardcodeados
-const cosechadoresIniciales = [
-  {
-    id: 1,
-    nombre: "Pedro Gómez",
-    documento: "12345678-9",
-    estado: "activo",
-    ultimaEntrega: "2023-05-15",
-    cantidadUltima: 25,
-  },
-  {
-    id: 2,
-    nombre: "Ana Martínez",
-    documento: "98765432-1",
-    estado: "activo",
-    ultimaEntrega: "2023-05-15",
-    cantidadUltima: 30,
-  },
-  {
-    id: 3,
-    nombre: "Luis Sánchez",
-    documento: "45678912-3",
-    estado: "activo",
-    ultimaEntrega: "2023-05-15",
-    cantidadUltima: 28,
-  },
-  {
-    id: 4,
-    nombre: "Carmen Díaz",
-    documento: "78912345-6",
-    estado: "inactivo",
-    ultimaEntrega: "2023-05-10",
-    cantidadUltima: 22,
-  },
-  {
-    id: 5,
-    nombre: "Roberto Flores",
-    documento: "32165498-7",
-    estado: "activo",
-    ultimaEntrega: "2023-05-14",
-    cantidadUltima: 27,
-  },
-]
-
 export default function VistaCuadrilla() {
-  const [cosechadores, setCosechadores] = useState(cosechadoresIniciales)
+  const [cosechadores, setCosechadores] = useState([])
   const [busqueda, setBusqueda] = useState("")
   const [filtroEstado, setFiltroEstado] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [nombreCuadrilla, setNombreCuadrilla] = useState("")
+
+  useEffect(() => {
+    // Suponiendo que el usuario logueado está en localStorage bajo "user"
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+      setError("No hay sesión activa")
+      setLoading(false)
+      return
+    }
+    fetch(`http://localhost:8080/mi-cuadrilla/${user.id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("No tienes cuadrilla asignada")
+        return res.json()
+      })
+      .then(data => {
+        setNombreCuadrilla(data.nombre)
+        // Si tus cosechadores no tienen estado, ultimaEntrega o cantidadUltima, deberás adaptar esto
+        setCosechadores(
+          data.cosechadores.map(c => ({
+            id: c.id,
+            nombre: `${c.nombre} ${c.p_apellido}`,
+            documento: c.rut || c.documento || "",
+            estado: c.estado || "activo", // Ajusta según tu modelo
+            ultimaEntrega: c.ultimaEntrega || "-",
+            cantidadUltima: c.cantidadUltima || "-",
+          }))
+        )
+        setLoading(false)
+      })
+      .catch(err => {
+        setError(err.message)
+        setLoading(false)
+      })
+  }, [])
 
   // Filtrar cosechadores
   const cosechadoresFiltrados = cosechadores.filter((c) => {
@@ -61,10 +54,13 @@ export default function VistaCuadrilla() {
     return cumpleBusqueda && cumpleFiltroEstado
   })
 
+  if (loading) return <div>Cargando...</div>
+  if (error) return <div className="text-red-600">{error}</div>
+
   return (
     <div className="bg-white rounded-sm shadow-sm p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold">Mi Cuadrilla</h2>
+        <h2 className="text-2xl font-bold">Mi Cuadrilla {nombreCuadrilla && `- ${nombreCuadrilla}`}</h2>
         <p className="text-gray-500">Visualiza todos los cosechadores a tu cargo</p>
       </div>
       <div className="flex flex-wrap gap-4 mb-6">
