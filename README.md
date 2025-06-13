@@ -9,22 +9,13 @@ El backend está construido con Deno y el frontend con React. El sistema utiliza
 
 1. Crear una base de datos local utilizando PostgreSQL.
 
-Crear una base de datos
-Ejecutar la query de prueba con el archivo /backend/script.sql
-
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL
-);
-
-INSERT INTO users (name) VALUES ('Alice'), ('Bob'), ('Charlie');
-```
+- Crear una base de datos
+- Ejecutar la query con el archivo /backend/script.sql
 
 2. Agregar variables de entorno.
 
-Crear un archivo .env con los datos de la base de datos creada
-Existe un archivo de ejemplo .envexample
+- Crear un archivo .env con los datos de la base de datos creada
+- Existe un archivo de ejemplo .envexample
 
 ```js
 DB_USER=tu_usuario
@@ -36,10 +27,20 @@ DB_PORT=5432
 
 3. Ejecutar el servidor.
 
-Abrir una terminal y acceder a la ruta del backend
-Ejecutar el comando "deno run dev"
+- Abrir una terminal y acceder a la ruta del backend
+- Ejecutar el comando "deno run dev"
 
 ```bash
 cd backend
 deno run dev
+```
+
+## Instrucciones para ejecutar el frontend en local
+
+1. Instalar dependencias y ejecutar el servidor.
+
+```bash
+cd frontend
+npm i
+npm run dev
 ```
