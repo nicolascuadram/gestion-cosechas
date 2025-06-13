@@ -92,21 +92,28 @@ export const deleteCuadrilla = async (ctx: Context) => {
 
 // Asignar cosechador a cuadrilla
 export const asignarCosechador = async (ctx: Context) => {
-  const id = ctx.params.id;
-  const { id_cuadrilla } = await ctx.request.body.json();
-  await client.queryObject(
-    "UPDATE cosechador SET id_cuadrilla = $1 WHERE id = $2",
-    [id_cuadrilla, id]
-  );
-  ctx.response.body = { message: "Cosechador actualizado" };
-};
+  if (ctx.request.hasBody) {
 
-// Quitar cosechador de cuadrilla
-export const quitarCosechador = async (ctx: Context) => {
-  const id = ctx.params.id;
-  await client.queryObject(
-    "UPDATE cosechador SET id_cuadrilla = NULL WHERE id = $1",
-    [id]
-  );
-  ctx.response.body = { message: "Cosechador removido de cuadrilla" };
+    const body = await ctx.request.body.json();
+    const cosechadorId = ctx.params.id;
+    const { id_cuadrilla } = body;
+    if (!cosechadorId || id_cuadrilla === undefined) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "ID de cosechador y cuadrilla son requeridos" };
+      return;
+    }
+    const result = await client.queryObject(
+      "UPDATE cosechador SET id_cuadrilla = $1 WHERE id = $2 RETURNING *",
+      [id_cuadrilla, cosechadorId]
+    );
+    if (result.rows.length === 0) {
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Cosechador no encontrado" };
+      return;
+    }
+    ctx.response.body = result.rows[0];
+  } else {
+    ctx.response.status = 400;
+    ctx.response.body = { message: "Tipo de body no soportado o body vacío" };
+  }
 };

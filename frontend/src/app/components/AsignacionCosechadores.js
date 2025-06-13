@@ -49,7 +49,7 @@ export default function AsignacionCosechadores() {
   const handleAsignarCuadrilla = async (cosechadorId) => {
     if (!cuadrillaSeleccionada) return;
     try {
-      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}`, {
+      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cuadrilla: parseInt(cuadrillaSeleccionada) }),
@@ -67,7 +67,7 @@ export default function AsignacionCosechadores() {
 
   const handleQuitarCuadrilla = async (cosechadorId) => {
     try {
-      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}`, {
+      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cuadrilla: null }),
@@ -172,22 +172,24 @@ export default function AsignacionCosechadores() {
   });
 
   return (
-    <div className="bg-white rounded-sm shadow-sm p-6 w-full">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-1">Gestión de Cosechadores</h2>
-        <p className="text-gray-500 mb-4">Administra los cosechadores asignados a cuadrillas</p>
-        <div className="flex flex-wrap gap-4 mb-4">
+    <div className="bg-white rounded-lg shadow p-8 w-full max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-2 text-green-700 flex items-center gap-2">
+          <UserPlus className="h-7 w-7" /> Gestión de Cosechadores
+        </h2>
+        <p className="text-gray-500 mb-6">Administra los cosechadores asignados a cuadrillas</p>
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
             <input
-              className="border rounded px-8 py-2 w-full"
+              className="border border-gray-300 rounded-md px-10 py-2 w-full focus:ring-2 focus:ring-green-200 transition"
               placeholder="Buscar por nombre o RUT..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </div>
           <select
-            className="border rounded px-4 py-2 min-w-[180px]"
+            className="border border-gray-300 rounded-md px-4 py-2 min-w-[180px] focus:ring-2 focus:ring-green-200 transition"
             value={filtroCuadrilla}
             onChange={(e) => setFiltroCuadrilla(e.target.value)}
           >
@@ -200,41 +202,41 @@ export default function AsignacionCosechadores() {
             ))}
           </select>
           <button
-            className="flex items-center gap-1 border rounded px-3 py-2 text-green-700 hover:bg-green-100"
+            className="flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition"
             onClick={() => openModal()}
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-5 w-5" />
             Agregar Cosechador
           </button>
         </div>
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500 font-medium">{error}</p>}
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border">
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
+        <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2">ID</th>
-              <th className="p-2">Nombre</th>
-              <th className="p-2">RUT</th>
-              <th className="p-2">Cuadrilla Actual</th>
-              <th className="p-2">Asignar a</th>
-              <th className="p-2 text-right">Acciones</th>
+            <tr className="bg-green-50 border-b">
+              <th className="p-3 font-semibold text-gray-700">ID</th>
+              <th className="p-3 font-semibold text-gray-700">Nombre</th>
+              <th className="p-3 font-semibold text-gray-700">RUT</th>
+              <th className="p-3 font-semibold text-gray-700">Cuadrilla Actual</th>
+              <th className="p-3 font-semibold text-gray-700">Asignar a</th>
+              <th className="p-3 font-semibold text-gray-700 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {cosechadoresFiltrados.map((cosechador) => (
-              <tr key={cosechador.id} className="border-t">
-                <td className="p-2">{cosechador.id}</td>
-                <td className="p-2">{`${cosechador.nombre} ${cosechador.p_apellido}`}</td>
-                <td className="p-2">{cosechador.rut}</td>
-                <td className="p-2">
+            {cosechadoresFiltrados.map((cosechador, idx) => (
+              <tr key={cosechador.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td className="p-3">{cosechador.id}</td>
+                <td className="p-3">{`${cosechador.nombre} ${cosechador.p_apellido}`}</td>
+                <td className="p-3">{cosechador.rut}</td>
+                <td className="p-3">
                   {cosechador.cuadrilla_nombre || (
-                    <span className="text-gray-400">Sin asignar</span>
+                    <span className="text-gray-400 italic">Sin asignar</span>
                   )}
                 </td>
-                <td className="p-2">
+                <td className="p-3">
                   <select
-                    className="border rounded px-2 py-1"
+                    className="border border-gray-300 rounded px-2 py-1 bg-white"
                     value={cuadrillaSeleccionada}
                     onChange={(e) => setCuadrillaSeleccionada(e.target.value)}
                   >
@@ -246,10 +248,10 @@ export default function AsignacionCosechadores() {
                     ))}
                   </select>
                 </td>
-                <td className="p-2 text-right">
+                <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-green-700 hover:bg-green-100 disabled:opacity-50"
+                      className="flex items-center gap-1 border border-green-600 rounded px-3 py-1 text-green-700 hover:bg-green-50 disabled:opacity-50 transition"
                       onClick={() => handleAsignarCuadrilla(cosechador.id)}
                       disabled={!cuadrillaSeleccionada}
                     >
@@ -257,7 +259,7 @@ export default function AsignacionCosechadores() {
                       Asignar
                     </button>
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-red-700 hover:bg-red-100 disabled:opacity-50"
+                      className="flex items-center gap-1 border border-red-600 rounded px-3 py-1 text-red-700 hover:bg-red-50 disabled:opacity-50 transition"
                       onClick={() => handleQuitarCuadrilla(cosechador.id)}
                       disabled={!cosechador.id_cuadrilla}
                     >
@@ -265,14 +267,14 @@ export default function AsignacionCosechadores() {
                       Quitar
                     </button>
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-blue-700 hover:bg-blue-100"
+                      className="flex items-center gap-1 border border-blue-600 rounded px-3 py-1 text-blue-700 hover:bg-blue-50 transition"
                       onClick={() => openModal(cosechador)}
                     >
                       <Pencil className="h-4 w-4" />
                       Editar
                     </button>
                     <button
-                      className="flex items-center gap-1 border rounded px-3 py-1 text-red-700 hover:bg-red-100"
+                      className="flex items-center gap-1 border border-red-600 rounded px-3 py-1 text-red-700 hover:bg-red-100 transition"
                       onClick={() => handleDeleteCosechador(cosechador.id)}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -284,7 +286,7 @@ export default function AsignacionCosechadores() {
             ))}
             {cosechadoresFiltrados.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-4 text-center text-gray-400">
+                <td colSpan={6} className="p-6 text-center text-gray-400">
                   No se encontraron cosechadores.
                 </td>
               </tr>
@@ -295,16 +297,16 @@ export default function AsignacionCosechadores() {
 
       {/* Modal for Adding/Editing Cosechador */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+            <h3 className="text-2xl font-bold mb-6 text-green-700">
               {editingCosechador ? "Editar Cosechador" : "Agregar Cosechador"}
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium">RUT *</label>
+                <label className="block text-sm font-medium mb-1">RUT *</label>
                 <input
-                  className="border rounded px-2 py-1 w-full"
+                  className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-green-200"
                   value={formData.rut}
                   onChange={(e) => setFormData({ ...formData, rut: e.target.value })}
                   placeholder="12345678-9"
@@ -312,9 +314,9 @@ export default function AsignacionCosechadores() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Nombre *</label>
+                <label className="block text-sm font-medium mb-1">Nombre *</label>
                 <input
-                  className="border rounded px-2 py-1 w-full"
+                  className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-green-200"
                   value={formData.nombre}
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   placeholder="Nombre"
@@ -322,9 +324,9 @@ export default function AsignacionCosechadores() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Primer Apellido *</label>
+                <label className="block text-sm font-medium mb-1">Primer Apellido *</label>
                 <input
-                  className="border rounded px-2 py-1 w-full"
+                  className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-green-200"
                   value={formData.p_apellido}
                   onChange={(e) => setFormData({ ...formData, p_apellido: e.target.value })}
                   placeholder="Primer Apellido"
@@ -332,18 +334,18 @@ export default function AsignacionCosechadores() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Segundo Apellido</label>
+                <label className="block text-sm font-medium mb-1">Segundo Apellido</label>
                 <input
-                  className="border rounded px-2 py-1 w-full"
+                  className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-green-200"
                   value={formData.s_apellido}
                   onChange={(e) => setFormData({ ...formData, s_apellido: e.target.value })}
                   placeholder="Segundo Apellido (opcional)"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Cuadrilla (opcional)</label>
+                <label className="block text-sm font-medium mb-1">Cuadrilla (opcional)</label>
                 <select
-                  className="border rounded px-2 py-1 w-full"
+                  className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-green-200"
                   value={formData.id_cuadrilla}
                   onChange={(e) => setFormData({ ...formData, id_cuadrilla: e.target.value })}
                 >
@@ -356,7 +358,7 @@ export default function AsignacionCosechadores() {
                 </select>
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-4">
                 <button
                   className="border rounded px-4 py-2 text-gray-700 hover:bg-gray-100"
                   onClick={() => setIsModalOpen(false)}

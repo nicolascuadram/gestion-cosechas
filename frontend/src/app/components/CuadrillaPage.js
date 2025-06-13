@@ -75,7 +75,7 @@ export default function CuadrillaPage() {
     await fetch(`http://localhost:8080/cosechadores/${cosechadorSeleccionado}/asignar`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cuadrillaId: asignarId }),
+      body: JSON.stringify({ id_cuadrilla: asignarId }),
     })
     // Refrescar cosechadores
     fetch("http://localhost:8080/cosechadores")
@@ -88,10 +88,10 @@ export default function CuadrillaPage() {
   // Quitar cosechador de cuadrilla
   const handleQuitarCosechador = async (cosechadorId) => {
     await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cuadrillaId: null }),
-    })
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_cuadrilla: null }),
+    });
     fetch("http://localhost:8080/cosechadores")
       .then(res => res.json())
       .then(setCosechadores)
@@ -149,7 +149,7 @@ export default function CuadrillaPage() {
               <div>
                 <span className="text-sm text-gray-600 font-semibold">Cosechadores:</span>
                 <ul className="list-disc ml-5 mt-1 mb-2">
-                  {cosechadores.filter(co => co.cuadrillaId === c.id).map(co =>
+                  {cosechadores.filter(co => co.id_cuadrilla === c.id).map(co =>
                     <li key={co.id} className="flex items-center gap-2 text-sm">
                       {co.nombre}
                       <button
@@ -158,7 +158,7 @@ export default function CuadrillaPage() {
                       >Quitar</button>
                     </li>
                   )}
-                  {cosechadores.filter(co => co.cuadrillaId === c.id).length === 0 && (
+                  {cosechadores.filter(co => co.id_cuadrilla === c.id).length === 0 && (
                     <li className="text-xs text-gray-400">Sin cosechadores</li>
                   )}
                 </ul>
@@ -197,23 +197,21 @@ export default function CuadrillaPage() {
                   required
                 >
                   <option value="">Selecciona un encargado</option>
-                    {encargados.map(e => {
-                    // Verifica si el encargado ya tiene una cuadrilla asignada
+                  {encargados.map(e => {
                     const tieneCuadrilla = cuadrillas.some(c => c.id_encargado === e.id)
-                    // Si está editando y el encargado es el actual, debe poder seleccionarlo
                     const esActual = editCuadrilla && editCuadrilla.id_encargado === e.id
                     return (
-                        <option
+                      <option
                         key={e.id}
                         value={e.id}
                         disabled={tieneCuadrilla && !esActual}
                         style={tieneCuadrilla && !esActual ? { opacity: 0.5 } : {}}
-                        >
+                      >
                         {e.nombre} {e.p_apellido}
                         {tieneCuadrilla && !esActual ? " (Ya asignado)" : ""}
-                        </option>
+                      </option>
                     )
-                    })}
+                  })}
                 </select>
               </div>
               <div className="flex gap-2 justify-end">
@@ -236,7 +234,7 @@ export default function CuadrillaPage() {
               onChange={e => setCosechadorSeleccionado(e.target.value)}
             >
               <option value="">Selecciona un cosechador</option>
-              {cosechadores.filter(c => !c.cuadrillaId).map(c => (
+              {cosechadores.filter(c => !c.id_cuadrilla).map(c => (
                 <option key={c.id} value={c.id}>{c.nombre}</option>
               ))}
             </select>
