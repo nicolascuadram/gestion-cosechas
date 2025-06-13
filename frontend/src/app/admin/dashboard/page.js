@@ -5,6 +5,7 @@ import AdminSidebar from "@/app/components/Sidebar"
 import TiposCultivoTable from "@/app/components/TiposCultivoTable"
 import EncargadosTable from "@/app/components/EncargadosTable"
 import AsignacionCosechadores from "@/app/components/AsignacionCosechadores"
+import CuadrillaPage from "@/app/components/CuadrillaPage"
 import { User, Bell } from "lucide-react"
 
 export default function AdminDashboard() {
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
         </div>
         <section className="p-8">
           {activeTab === "encargados" && <EncargadosTable />}
+          {activeTab === "cuadrillas" && <CuadrillaPage />}
           {activeTab === "cultivos" && <TiposCultivoTable />}
           {activeTab === "asignacion" && <AsignacionCosechadores />}
           {/* Puedes agregar más vistas aquí según el tab */}
