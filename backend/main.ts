@@ -4,6 +4,8 @@ import userRoutes from "./routes/userRoutes.ts";
 import encargadoRoutes from "./routes/encargadoRoutes.ts";
 import cuadrillaRoutes from "./routes/cuadrillaRoutes.ts";
 
+import cosechadorRoutes from "./routes/cosechadorRoutes.ts"; // Add this line
+
 const app = new Application();
 const port = 8080;
 
@@ -26,6 +28,9 @@ app.use(encargadoRoutes.routes());
 app.use(encargadoRoutes.allowedMethods());
 app.use(cuadrillaRoutes.routes());
 app.use(cuadrillaRoutes.allowedMethods());
+
+app.use(cosechadorRoutes.routes()); // Add this line
+app.use(cosechadorRoutes.allowedMethods()); // Add this line
 
 app.listen({ port: port });
 console.log(`Server running on http://localhost:${port}`);

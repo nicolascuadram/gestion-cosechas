@@ -62,7 +62,7 @@ export default function VistaCuadrilla() {
   })
 
   return (
-    <div className="bg-white rounded shadow p-6">
+    <div className="bg-white rounded-sm shadow-sm p-6">
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Mi Cuadrilla</h2>
         <p className="text-gray-500">Visualiza todos los cosechadores a tu cargo</p>
@@ -76,7 +76,7 @@ export default function VistaCuadrilla() {
               placeholder="Buscar por nombre o documento..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-10 pr-3 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-green-200"
+              className="pl-10 pr-3 py-2 border rounded-sm w-full focus:outline-hidden focus:ring-2 focus:ring-green-200"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function VistaCuadrilla() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cosechadoresFiltrados.map((cosechador) => (
-          <div key={cosechador.id} className="border rounded shadow-sm overflow-hidden bg-white flex flex-col">
+          <div key={cosechador.id} className="border rounded-sm shadow-xs overflow-hidden bg-white flex flex-col">
             <div className="p-6 flex-1 flex flex-col">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -151,7 +151,7 @@ export default function VistaCuadrilla() {
               </div>
             </div>
             <div className="bg-gray-50 p-4 flex justify-end">
-              <button className="px-4 py-1 border rounded text-sm font-medium hover:bg-gray-100">
+              <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
                 Gestionar
               </button>
             </div>

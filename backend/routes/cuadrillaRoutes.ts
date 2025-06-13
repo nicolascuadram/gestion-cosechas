@@ -5,7 +5,6 @@ import {
   updateCuadrilla,
   deleteCuadrilla,
   asignarCosechador,
-  quitarCosechador
 } from "../controllers/cuadrillaControllers.ts";
 
 const router = new Router();
@@ -17,6 +16,5 @@ router.delete("/cuadrillas/:id", deleteCuadrilla);
 
 // Asignar/quitar cosechador a cuadrilla
 router.put("/cosechadores/:id/asignar", asignarCosechador);
-router.put("/cosechadores/:id/quitar", quitarCosechador);
 
 export default router;

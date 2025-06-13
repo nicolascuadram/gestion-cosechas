@@ -18,16 +18,16 @@ export default function TiposCultivoTable() {
   )
 
   return (
-    <div className="bg-white rounded shadow p-6 w-full">
+    <div className="bg-white rounded-sm shadow-sm p-6 w-full">
       <div className="flex justify-between mb-4">
         <input
-          className="border rounded px-2 py-1 w-1/3"
+          className="border rounded-sm px-2 py-1 w-1/3"
           placeholder="Buscar cultivo..."
           value={busqueda}
           onChange={e => setBusqueda(e.target.value)}
         />
         {/* Botón de ejemplo, puedes agregar modal para agregar */}
-        <button className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        <button className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700">
           <Plus className="h-4 w-4" />
           Agregar Cultivo
         </button>
@@ -48,8 +48,8 @@ export default function TiposCultivoTable() {
               <td className="p-2 flex items-center gap-2"><Leaf className="h-4 w-4 text-green-600" />{c.nombre}</td>
               <td className="p-2">${c.valor}</td>
               <td className="p-2 flex justify-end gap-2">
-                <button className="p-1 hover:bg-gray-200 rounded"><Edit className="h-4 w-4" /></button>
-                <button className="p-1 hover:bg-gray-200 rounded"><Trash className="h-4 w-4" /></button>
+                <button className="p-1 hover:bg-gray-200 rounded-sm"><Edit className="h-4 w-4" /></button>
+                <button className="p-1 hover:bg-gray-200 rounded-sm"><Trash className="h-4 w-4" /></button>
               </td>
             </tr>
           ))}

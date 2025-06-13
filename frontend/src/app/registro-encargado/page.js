@@ -82,7 +82,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white rounded shadow p-8 w-full max-w-lg">
+      <div className="bg-white rounded-sm shadow-sm p-8 w-full max-w-lg">
         <div className="flex justify-between items-center mb-2">
           <Link href="/">
             <button className="flex items-center text-gray-600 hover:text-green-700 text-sm" onClick={() => router.back()}>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
           Completa el formulario para crear tu cuenta como jefe de cuadrilla
         </p>
         {error && (
-          <div className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+          <div className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-sm mb-4">
             <AlertCircle className="h-4 w-4" />
             <span>{error}</span>
           </div>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="border rounded px-3 py-2 w-full"
+                className="border rounded-sm px-3 py-2 w-full"
               />
             </div>
 
@@ -196,7 +196,7 @@ export default function RegisterPage() {
                 value={formData.empresa}
                 onChange={handleInputChange}
                 required
-                className="border rounded px-3 py-2 w-full"
+                className="border rounded-sm px-3 py-2 w-full"
               />
             </div>
 
