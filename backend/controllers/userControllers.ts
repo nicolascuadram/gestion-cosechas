@@ -12,3 +12,4 @@ export const getUsers = async (ctx: Context) => {
     ctx.response.body = { message: "Error al obtener usuarios" };
   }
 };
+

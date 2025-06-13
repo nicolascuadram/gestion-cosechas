@@ -172,7 +172,7 @@ export default function AsignacionCosechadores() {
   });
 
   return (
-    <div className="bg-white rounded shadow p-6 w-full">
+    <div className="bg-white rounded-sm shadow-sm p-6 w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-1">Gestión de Cosechadores</h2>
         <p className="text-gray-500 mb-4">Administra los cosechadores asignados a cuadrillas</p>
