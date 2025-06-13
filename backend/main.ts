@@ -2,6 +2,7 @@ import { Application } from "@oak/oak/application";
 import mainRoutes from "./routes/mainRoutes.ts";
 import userRoutes from "./routes/userRoutes.ts";
 import encargadoRoutes from "./routes/encargadoRoutes.ts";
+import cuadrillaRoutes from "./routes/cuadrillaRoutes.ts";
 
 import cosechadorRoutes from "./routes/cosechadorRoutes.ts"; // Add this line
 
@@ -25,6 +26,8 @@ app.use(userRoutes.routes());
 app.use(userRoutes.allowedMethods());
 app.use(encargadoRoutes.routes());
 app.use(encargadoRoutes.allowedMethods());
+app.use(cuadrillaRoutes.routes());
+app.use(cuadrillaRoutes.allowedMethods());
 
 app.use(cosechadorRoutes.routes()); // Add this line
 app.use(cosechadorRoutes.allowedMethods()); // Add this line

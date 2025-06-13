@@ -8,10 +8,23 @@ CREATE TABLE usuario (
   contraseña VARCHAR(20)
 );
 
+CREATE TABLE IF NOT EXISTS encargados (
+  id SERIAL PRIMARY KEY,
+  rut VARCHAR(12) UNIQUE NOT NULL,
+  nombre VARCHAR(100) NOT NULL,
+  p_apellido VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  telefono VARCHAR(30),
+  password VARCHAR(255) NOT NULL,
+  empresa VARCHAR(100),
+  region VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE cuadrilla (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL,
-  id_encargado INTEGER REFERENCES usuario(id)
+  id_encargado INTEGER REFERENCES encargados(id)
 );
 
 CREATE TABLE cosechador (
@@ -47,15 +60,3 @@ CREATE TABLE registro_cosecha (
   cantidad_capachos INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS encargados (
-  id SERIAL PRIMARY KEY,
-  rut VARCHAR(12) UNIQUE NOT NULL,
-  nombre VARCHAR(100) NOT NULL,
-  p_apellido VARCHAR(100) NOT NULL,
-  email VARCHAR(150) UNIQUE NOT NULL,
-  telefono VARCHAR(30),
-  password VARCHAR(255) NOT NULL,
-  empresa VARCHAR(100),
-  region VARCHAR(100),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
