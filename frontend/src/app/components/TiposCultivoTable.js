@@ -144,13 +144,11 @@ export default function TiposCultivoTable() {
 
   return (
     <div className="bg-white rounded-sm shadow-sm p-6 w-full">
-      <div className="flex justify-between mb-4">
-        <input
-          className="border rounded-sm px-2 py-1 w-1/3"
-          placeholder="Buscar cultivo..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h2 className="text-xl font-bold">Gestión de Cultivos</h2>
+          <p className="text-[#737373]">Agrega, edita o eliminar cultivos</p>
+        </div>
         <button
           className="bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 flex items-center justify-center gap-2"
           onClick={abrirModalAgregar}
@@ -158,6 +156,15 @@ export default function TiposCultivoTable() {
           <Plus className="h-4 w-4" />
           Agregar Cultivo
         </button>
+      </div>
+      <div className="flex justify-start items-start mb-4">
+        <input
+          className="border rounded-sm px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
+          placeholder="Buscar cultivo..."
+          value={busqueda}
+          type="search"
+          onChange={e => setBusqueda(e.target.value)}
+        />
       </div>
 
       <table className="w-full text-left border">

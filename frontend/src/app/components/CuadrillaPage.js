@@ -174,7 +174,7 @@ export default function CuadrillaPage() {
 
       {/* Modal crear/editar cuadrilla */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">{editCuadrilla ? "Editar Cuadrilla" : "Nueva Cuadrilla"}</h3>
             {error && <div className="text-red-600 mb-2">{error}</div>}
@@ -225,7 +225,7 @@ export default function CuadrillaPage() {
 
       {/* Modal asignar cosechador */}
       {asignarId && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-sm">
             <h3 className="text-lg font-bold mb-4">Asignar Cosechador</h3>
             <select
