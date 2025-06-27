@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Edit, Trash, UserPlus, Users } from "lucide-react"
+import { Edit, Trash, Plus, Users } from "lucide-react"
 
 export default function CuadrillaPage() {
   const [cuadrillas, setCuadrillas] = useState([])
@@ -101,14 +101,14 @@ export default function CuadrillaPage() {
     <div className="bg-white rounded shadow p-6 w-full">
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-xl font-bold flex items-center gap-2"><Users className="h-6 w-6" /> Gestión de Cuadrillas</h2>
+          <h2 className="text-xl font-bold">Gestión de Cuadrillas</h2>
           <p className="text-[#737373]">Crea, edita y asigna cosechadores a cuadrillas</p>
         </div>
         <button
           className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           onClick={() => { setModalOpen(true); setEditCuadrilla(null); setForm({ nombre: "", encargadoId: "" }) }}
         >
-          <UserPlus className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Nueva Cuadrilla
         </button>
       </div>
