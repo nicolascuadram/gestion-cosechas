@@ -50,6 +50,9 @@ CREATE TABLE cosecha (
   fecha_inicio DATE NOT NULL,
   fecha_fin DATE,
   estado VARCHAR(20) DEFAULT 'activa' CHECK (estado IN ('activa', 'completada', 'cancelada'))
+  CONSTRAINT valid_date_range CHECK (
+    fecha_fin IS NULL OR fecha_fin >= fecha_inicio
+  )
 );
 
 CREATE TABLE registro_cosecha (

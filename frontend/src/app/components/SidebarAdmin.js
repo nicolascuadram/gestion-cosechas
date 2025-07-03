@@ -1,13 +1,14 @@
 "use client"
 
-import { Users, FileText, Leaf, UserPlus, BarChart3, Home, LogOut, FileUser } from "lucide-react"
+import { Users, FileText, Leaf, Sprout, UserPlus, BarChart3, Home, LogOut, FileUser } from "lucide-react"
 import Link from "next/link"
 
 const menuItems = [
   { id: "encargados", label: "Encargados", icon: <Users className="h-5 w-5" /> },
   { id: "cuadrillas", label: "Cuadrillas", icon: <FileUser className="h-5 w-5" /> },
   { id: "asignacion", label: "Asignación", icon: <UserPlus className="h-5 w-5" /> },
-  { id: "cultivos", label: "Tipos de Cultivo", icon: <Leaf className="h-5 w-5" /> },
+  { id: "cultivos", label: "Tipos de Cultivo", icon: <Sprout className="h-5 w-5" /> },
+  { id: "cosecha", label: "Cosecha", icon: <Leaf className="h-5 w-5" /> },
   { id: "reportes", label: "Reportes", icon: <FileText className="h-5 w-5" /> },
   { id: "estadisticas", label: "Estadísticas", icon: <BarChart3 className="h-5 w-5" /> },
 ]
