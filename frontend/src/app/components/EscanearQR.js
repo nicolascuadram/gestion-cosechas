@@ -11,12 +11,103 @@ export default function EscanearQR() {
     const [facingMode, setFacingMode] = useState('environment'); // 'user' para cámara frontal, 'environment' para trasera
     const [isMobile, setIsMobile] = useState(false);
     const [contCapachos, setContCapachos] = useState("1");
-    const [tipoCultivo, setTipoCultivo] = useState("");
+    const [cosechas, setCosechas] = useState([]);
+    const [cuadrillas, setCuadrillas] = useState([]);
+    const [tiposCosecha, setTiposCosecha] = useState([]);
+    const [cosechaSeleccionada, setCosechaSeleccionada] = useState("");
+    const [qrData, setQrData] = useState(null);
 
-    const cultivos = [
-        { id: 'manzana', nombre: 'Manzana' },
-        { id: 'pera', nombre: 'Pera' }
-    ];
+    const fetchCosechas = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/administrador/cosecha");
+            const data = await response.json();
+            setCosechas(data);
+            console.log("Cosechas cargadas:", data);
+        } catch (err) {
+            console.error("Error fetching cosechas:", err);
+            setError("Error al cargar cosechas");
+        }
+    };
+
+    const fetchCuadrillas = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/cuadrillas");
+            const data = await response.json();
+            setCuadrillas(data);
+        } catch (err) {
+            console.error("Error fetching cuadrillas:", err);
+            setError("Error al cargar cuadrillas");
+        }
+    };
+
+    const fetchTiposCosecha = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/administrador/getTipo_cosecha");
+            const data = await response.json();
+            setTiposCosecha(data);
+        } catch (err) {
+            console.error("Error fetching tipos de cosecha:", err);
+            setError("Error al cargar tipos de cosecha");
+        }
+    };
+
+    useEffect(() => {
+        fetchCosechas();
+        fetchCuadrillas();
+        fetchTiposCosecha();
+    }, []);
+
+    const getNombreCuadrilla = (id) => {
+        return cuadrillas.find(c => c.id === id)?.nombre || id;
+    };
+
+    const getNombreTipoCosecha = (id) => {
+        return tiposCosecha.find(t => t.id === id)?.nombre || id;
+    };
+
+    const registrarCosecha = async () => {
+        if (!qrData?.id || !cosechaSeleccionada || !contCapachos) {
+            alert('Faltan datos obligatorios.');
+            console.error('Datos faltantes:', { qrData, cosechaSeleccionada, contCapachos });
+            return;
+        }
+
+        const payload = {
+            id_cosecha: parseInt(cosechaSeleccionada),
+            id_cosechador: qrData.id,
+            fecha: new Date().toISOString(),
+            cantidad_capachos: parseInt(contCapachos),
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/registro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+            }
+
+            const data = await response.json();
+            console.log("Registro creado:", data);
+            alert("Registro creado exitosamente");
+
+            // Reiniciar el formulario
+            setResult('');
+            setQrData(null);
+            setContCapachos("1");
+            setCosechaSeleccionada(null);
+
+        } catch (error) {
+            console.error("Error registrando cosecha:", error);
+            alert("Ocurrió un error al registrar la cosecha.");
+        }
+    };
+
 
     useEffect(() => {
         // Detectar si es móvil
@@ -30,11 +121,30 @@ export default function EscanearQR() {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    const handleScan = (result) => {
-        if (result && result.length > 0) {
-            setResult(result[0].rawValue);
-            setIsScanning(false);
-            setError('');
+    const handleScan = (results) => {
+        if (results && results.length > 0) {
+            const raw = results[0].rawValue;
+
+            try {
+                const parsed = JSON.parse(raw);
+
+                if (!parsed.id) {
+                    throw new Error("El campo 'id' es obligatorio.");
+                }
+
+                // Validación básica
+                const { id, rut = '', nombre = '' } = parsed;
+
+                setQrData({ id, rut, nombre });
+                setResult(raw);
+                setIsScanning(false);
+                setError('');
+            } catch (err) {
+                console.error('QR inválido:', err);
+                setError('El código QR escaneado no es válido. Debe ser un JSON con al menos el campo "id".');
+                setQrData(null);
+                setResult('');
+            }
         }
     };
 
@@ -142,14 +252,36 @@ export default function EscanearQR() {
                         )}
                     </>
                 ) : (
-                    <div className="flex flex-col justify-start items-center gap-4 w-full">
-                        <h3 className="text-xl font-bold">Resultado Escaneado:</h3>
-                        <div className="flex justify-center items-start w-full bg-gris-fondo py-6 px-4 rounded">
-                            {result}
-                        </div>
+                    <div className="flex flex-col justify-start items-start gap-4 w-full">
+                        <h3 className="text-xl font-bold">QR Válido</h3>
                         <form className="flex flex-col justify-start items-center gap-4 w-full">
+                            {qrData?.nombre && (
+                                <div className="flex flex-col justify-start items-start gap-1 w-full">
+                                    <label className="block text-sm text-[#333] font-medium mb-1">Nombre del Cosechador:</label>
+                                    <div className="w-full px-3 py-2 border rounded-sm bg-gray-100 text-gray-700">
+                                        {qrData.nombre}
+                                    </div>
+                                </div>
+                            )}
                             <div className="flex flex-col justify-start items-start gap-1 w-full">
-                                <label htmlFor="contCapachos" className="block text-sm text-[#333] font-medium mb-1">Cantidad:</label>
+                                <label htmlFor="cosechaSeleccionada" className="block text-sm text-[#333] font-medium mb-1">Cosecha:</label>
+                                <select
+                                    id="cosechaSeleccionada"
+                                    className="border rounded-sm px-3 py-2 w-full outline-[#16a34a]"
+                                    value={cosechaSeleccionada}
+                                    onChange={(e) => setCosechaSeleccionada(e.target.value)}
+                                    required
+                                >
+                                    <option value="" disabled>Selecciona una cosecha</option>
+                                    {cosechas.map(cosecha => (
+                                        <option key={cosecha.id} value={cosecha.id}>
+                                            {getNombreCuadrilla(cosecha.id_cuadrilla)} - {getNombreTipoCosecha(cosecha.id_tipo_cosecha)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex flex-col justify-start items-start gap-1 w-full">
+                                <label htmlFor="contCapachos" className="block text-sm text-[#333] font-medium mb-1">Cantidad de capachos:</label>
                                 <input
                                     id="contCapachos"
                                     type="number"
@@ -158,23 +290,6 @@ export default function EscanearQR() {
                                     onChange={(e) => setContCapachos(e.target.value)}
                                     required
                                 />
-                            </div>
-                            <div className="flex flex-col justify-start items-start gap-1 w-full">
-                                <label htmlFor="tipoCultivo" className="block text-sm text-[#333] font-medium mb-1">Tipo de Cultivo:</label>
-                                <select
-                                    id="tipoCultivo"
-                                    className="border rounded-sm px-3 py-2 w-full outline-[#16a34a]"
-                                    value={tipoCultivo}
-                                    onChange={(e) => setTipoCultivo(e.target.value)}
-                                    required
-                                >
-                                    <option value="" disabled>Selecciona un cultivo</option>
-                                    {cultivos.map(cultivo => (
-                                        <option key={cultivo.id} value={cultivo.id}>
-                                            {cultivo.nombre}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
                         </form>
                         <div className="flex justify-center items-start gap-4 w-full">
@@ -187,11 +302,7 @@ export default function EscanearQR() {
                                 Escanear otro código
                             </button>
                             <button
-                                onClick={() => {
-                                    /* Esto actualmente copia el resultado al portapapeles, cambiar a futuro */
-                                    navigator.clipboard.writeText(result);
-                                    alert('Resultado copiado al portapapeles');
-                                }}
+                                onClick={registrarCosecha}
                                 className="flex justify-center items-center gap-2 px-4 py-2 w-full md:w-auto bg-principal hover:bg-principal-hover text-white rounded cursor-pointer text-nowrap"
                             >
                                 Registrar Entrega

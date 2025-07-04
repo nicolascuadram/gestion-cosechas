@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Edit, Trash, UserPlus, Users } from "lucide-react"
+import { Edit, Trash, Plus, Users } from "lucide-react"
 
 export default function CuadrillaPage() {
   const [cuadrillas, setCuadrillas] = useState([])
@@ -101,14 +101,14 @@ export default function CuadrillaPage() {
     <div className="bg-white rounded shadow p-6 w-full">
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-xl font-bold flex items-center gap-2"><Users className="h-6 w-6" /> Gestión de Cuadrillas</h2>
+          <h2 className="text-xl font-bold">Gestión de Cuadrillas</h2>
           <p className="text-[#737373]">Crea, edita y asigna cosechadores a cuadrillas</p>
         </div>
         <button
           className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           onClick={() => { setModalOpen(true); setEditCuadrilla(null); setForm({ nombre: "", encargadoId: "" }) }}
         >
-          <UserPlus className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Nueva Cuadrilla
         </button>
       </div>
@@ -174,7 +174,7 @@ export default function CuadrillaPage() {
 
       {/* Modal crear/editar cuadrilla */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">{editCuadrilla ? "Editar Cuadrilla" : "Nueva Cuadrilla"}</h3>
             {error && <div className="text-red-600 mb-2">{error}</div>}
@@ -225,7 +225,7 @@ export default function CuadrillaPage() {
 
       {/* Modal asignar cosechador */}
       {asignarId && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-sm">
             <h3 className="text-lg font-bold mb-4">Asignar Cosechador</h3>
             <select

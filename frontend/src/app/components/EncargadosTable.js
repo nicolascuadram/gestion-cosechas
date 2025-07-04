@@ -107,7 +107,7 @@ export default function EncargadosTable() {
 
       {/* Modal de edición */}
       {editEncargado && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">Editar Encargado</h3>
             {editError && <div className="text-red-600 mb-2">{editError}</div>}
@@ -153,7 +153,7 @@ export default function EncargadosTable() {
 
       {/* Modal de confirmación de eliminación */}
       {deleteId !== null && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow w-full max-w-sm">
             <h3 className="text-lg font-bold mb-4">¿Eliminar encargado?</h3>
             {deleteError && <div className="text-red-600 mb-2">{deleteError}</div>}

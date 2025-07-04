@@ -6,7 +6,14 @@ import { Edit, Trash, Leaf, Plus, X } from "lucide-react"
 export default function TiposCultivoTable() {
   const [cultivos, setCultivos] = useState([])
   const [busqueda, setBusqueda] = useState("")
-  const [nuevo, setNuevo] = useState({ nombre: "", descripcion: "", precio_por_capacho: "" })
+  
+  // Estados para el modal de agregar
+  const [modalAgregar, setModalAgregar] = useState(false)
+  const [nuevoCultivo, setNuevoCultivo] = useState({ 
+    nombre: "", 
+    descripcion: "", 
+    precio_por_capacho: "" 
+  })
 
   // Para modal eliminar
   const [modalEliminar, setModalEliminar] = useState({ abierto: false, id: null, nombre: "" })
@@ -29,22 +36,40 @@ export default function TiposCultivoTable() {
     c.nombre.toLowerCase().includes(busqueda.toLowerCase())
   )
 
+  const abrirModalAgregar = () => {
+    setModalAgregar(true)
+  }
+
+  const cerrarModalAgregar = () => {
+    setModalAgregar(false)
+    setNuevoCultivo({ nombre: "", descripcion: "", precio_por_capacho: "" })
+  }
+
+  const handleChangeAgregar = (field, value) => {
+    setNuevoCultivo(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
   const handleAgregar = async () => {
-    if (!nuevo.nombre || !nuevo.precio_por_capacho) return alert("Nombre y precio son obligatorios.")
+    if (!nuevoCultivo.nombre || !nuevoCultivo.precio_por_capacho) {
+      return alert("Nombre y precio son obligatorios.")
+    }
 
     try {
       const res = await fetch("http://localhost:8080/administrador/getTipo_cosecha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nombre: nuevo.nombre,
-          descripcion: nuevo.descripcion,
-          precio_por_capacho: parseInt(nuevo.precio_por_capacho),
+          nombre: nuevoCultivo.nombre,
+          descripcion: nuevoCultivo.descripcion,
+          precio_por_capacho: parseInt(nuevoCultivo.precio_por_capacho),
         }),
       })
 
       if (res.ok) {
-        setNuevo({ nombre: "", descripcion: "", precio_por_capacho: "" })
+        cerrarModalAgregar()
         cargarCultivos()
       } else {
         const error = await res.json()
@@ -119,42 +144,27 @@ export default function TiposCultivoTable() {
 
   return (
     <div className="bg-white rounded-sm shadow-sm p-6 w-full">
-      <div className="flex justify-between mb-4">
-        <input
-          className="border rounded-sm px-2 py-1 w-1/3"
-          placeholder="Buscar cultivo..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
-      </div>
-
-      <div className="mb-4 grid grid-cols-3 gap-2">
-        <input
-          className="border px-2 py-1"
-          placeholder="Nombre"
-          value={nuevo.nombre}
-          onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })}
-        />
-        <input
-          className="border px-2 py-1"
-          placeholder="Descripción"
-          value={nuevo.descripcion}
-          onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })}
-        />
-        <input
-          type="number"
-          className="border px-2 py-1"
-          placeholder="Precio por capacho"
-          value={nuevo.precio_por_capacho}
-          onChange={e => setNuevo({ ...nuevo, precio_por_capacho: e.target.value })}
-        />
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h2 className="text-xl font-bold">Gestión de Cultivos</h2>
+          <p className="text-[#737373]">Agrega, edita o eliminar cultivos</p>
+        </div>
         <button
-          className="col-span-3 bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 flex items-center justify-center gap-2"
-          onClick={handleAgregar}
+          className="bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 flex items-center justify-center gap-2"
+          onClick={abrirModalAgregar}
         >
           <Plus className="h-4 w-4" />
           Agregar Cultivo
         </button>
+      </div>
+      <div className="flex justify-start items-start mb-4">
+        <input
+          className="border rounded-sm px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
+          placeholder="Buscar cultivo..."
+          value={busqueda}
+          type="search"
+          onChange={e => setBusqueda(e.target.value)}
+        />
       </div>
 
       <table className="w-full text-left border">
@@ -191,9 +201,71 @@ export default function TiposCultivoTable() {
         </tbody>
       </table>
 
+      {/* Modal Agregar */}
+      {modalAgregar && (
+       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow max-w-md w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold">Agregar Nuevo Cultivo</h2>
+              <button onClick={cerrarModalAgregar}>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Nombre*</label>
+                <input
+                  className="border px-2 py-1 w-full"
+                  placeholder="Nombre del cultivo"
+                  value={nuevoCultivo.nombre}
+                  onChange={e => handleChangeAgregar("nombre", e.target.value)}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Descripción</label>
+                <input
+                  className="border px-2 py-1 w-full"
+                  placeholder="Descripción opcional"
+                  value={nuevoCultivo.descripcion}
+                  onChange={e => handleChangeAgregar("descripcion", e.target.value)}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Precio por Capacho*</label>
+                <input
+                  type="number"
+                  className="border px-2 py-1 w-full"
+                  placeholder="Precio en CLP"
+                  value={nuevoCultivo.precio_por_capacho}
+                  onChange={e => handleChangeAgregar("precio_por_capacho", e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={cerrarModalAgregar}
+              >
+                Cancelar
+              </button>
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                onClick={handleAgregar}
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal eliminar */}
       {modalEliminar.abierto && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow max-w-sm w-full">
             <h2 className="text-lg font-bold mb-4">Confirmar eliminación</h2>
             <p>¿Estás seguro de eliminar el cultivo <strong>{modalEliminar.nombre}</strong>?</p>
@@ -217,7 +289,7 @@ export default function TiposCultivoTable() {
 
       {/* Modal editar */}
       {modalEditar.abierto && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Editar Cultivo</h2>
