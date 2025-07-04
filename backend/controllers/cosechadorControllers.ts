@@ -163,3 +163,50 @@ export const deleteCosechador = async (ctx: Context) => {
     ctx.response.body = { message: "Error al eliminar cosechador", error: error.message };
   }
 };
+
+export const getCosechadorById = async (ctx: Context) => {
+  try {
+    // Obtener el ID de los parámetros de la ruta
+    const id = ctx.params.id;
+    
+    if (!id || isNaN(Number(id))) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "ID inválido o no proporcionado" };
+      return;
+    }
+
+    const result = await client.queryObject({
+      text: `
+        SELECT 
+          c.id, 
+          c.rut, 
+          c.nombre, 
+          c.p_apellido, 
+          c.s_apellido, 
+          c.id_cuadrilla, 
+          cu.nombre as cuadrilla_nombre,
+          e.nombre as encargado_nombre,
+          e.p_apellido as encargado_apellido
+        FROM cosechador c
+        LEFT JOIN cuadrilla cu ON c.id_cuadrilla = cu.id
+        LEFT JOIN encargados e ON cu.id_encargado = e.id
+        WHERE c.id = $1
+      `,
+      args: [Number(id)]
+    });
+
+    if (result.rows.length === 0) {
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Cosechador no encontrado" };
+      return;
+    }
+
+    ctx.response.body = result.rows[0];
+  } catch (error) {
+    ctx.response.status = 500;
+    ctx.response.body = { 
+      message: "Error al obtener el cosechador", 
+      error: error.message 
+    };
+  }
+};

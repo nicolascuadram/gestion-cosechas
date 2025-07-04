@@ -20,7 +20,7 @@ export default function VistaCuadrilla() {
       setLoading(false)
       return
     }
-    fetch(`http://localhost:8080/mi-cuadrilla/${user.id}`)
+    fetch(`http://192.168.0.2:8080/mi-cuadrilla/${user.id}`)
       .then(res => {
         if (!res.ok) throw new Error("No tienes cuadrilla asignada")
         return res.json()
@@ -34,7 +34,9 @@ export default function VistaCuadrilla() {
             nombre: `${c.nombre} ${c.p_apellido}`,
             documento: c.rut || c.documento || "",
             estado: c.estado || "activo", // Ajusta según tu modelo
-            ultimaEntrega: c.ultimaEntrega || "-",
+                ultimaEntrega: c.ultimaEntrega 
+      ? formatDateTime(c.ultimaEntrega) 
+      : "-",
             cantidadUltima: c.cantidadUltima || "-",
           }))
         )
@@ -54,6 +56,22 @@ export default function VistaCuadrilla() {
     const cumpleFiltroEstado = filtroEstado === null || c.estado === filtroEstado
     return cumpleBusqueda && cumpleFiltroEstado
   })
+
+  function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  if (isNaN(date)) return "-";
+
+  const pad = (n) => n.toString().padStart(2, "0");
+
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${day}-${month}-${year}`;
+}
 
   if (loading) return <div>Cargando...</div>
   if (error) return <div className="text-red-600">{error}</div>
@@ -114,7 +132,7 @@ export default function VistaCuadrilla() {
         {cosechadoresFiltrados.map((cosechador) => (
           <div key={cosechador.id} className="border rounded-sm shadow-xs overflow-hidden bg-white flex flex-col">
             <div className="p-6 flex-1 flex flex-col">
-              <div className="flex items-start justify-between">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="bg-green-100 p-2 rounded-full">
                     <User className="h-6 w-6 text-green-600" />
@@ -134,24 +152,35 @@ export default function VistaCuadrilla() {
                   {cosechador.estado === "activo" ? "Activo" : "Inactivo"}
                 </span>
               </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center text-sm">
-                  <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                  <span className="text-gray-500">Última entrega:</span>
-                  <span className="ml-1">{cosechador.ultimaEntrega}</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <Package className="h-4 w-4 mr-2 text-gray-400" />
-                  <span className="text-gray-500">Cantidad:</span>
-                  <span className="ml-1">{cosechador.cantidadUltima} capachos</span>
-                </div>
-              </div>
+              
+              
+              <div className="mt-4 space-y-3">
+  {/* Fecha de última entrega - Versión mejorada */}
+  <div className="flex items-start text-sm text-gray-600">
+    <Calendar className="h-5 w-5 mr-3 text-indigo-400 flex-shrink-0" />
+    <div>
+      <span className="font-medium text-gray-700 mr-1">Entrega:</span>
+      <span className="text-gray-800 break-words">
+        {cosechador.ultimaEntrega}
+      </span>
+    </div>
+  </div>
+
+  {/* Cantidad - Versión consistente */}
+  <div className="flex items-center text-sm text-gray-600">
+    <Package className="h-5 w-5 mr-3 text-indigo-400 flex-shrink-0" />
+    <div>
+      <span className="font-medium text-gray-700 mr-1">Cantidad:</span>
+      <span className="text-gray-800">{cosechador.cantidadUltima} capachos</span>
+    </div>
+  </div>
+</div>
             </div>
             <div className="bg-gray-50 p-4 flex justify-between items-center">
               <GenerarQR id={cosechador.id} rut={cosechador.documento} nombre={cosechador.nombre} />
-              <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
+              {/* <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
                 Gestionar
-              </button>
+              </button> */}
             </div>
           </div>
         ))}

@@ -50,7 +50,7 @@ export default function GestionCosechas() {
 
   const fetchCosechas = async () => {
     try {
-      const response = await fetch("http://localhost:8080/administrador/cosecha");
+      const response = await fetch("http://192.168.0.2:8080/administrador/cosecha");
       const data = await response.json();
       setCosechas(data);
     } catch (err) {
@@ -61,7 +61,7 @@ export default function GestionCosechas() {
 
   const fetchCuadrillas = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cuadrillas");
+      const response = await fetch("http://192.168.0.2:8080/cuadrillas");
       const data = await response.json();
       setCuadrillas(data);
     } catch (err) {
@@ -72,7 +72,7 @@ export default function GestionCosechas() {
 
   const fetchTiposCosecha = async () => {
     try {
-      const response = await fetch("http://localhost:8080/administrador/getTipo_cosecha");
+      const response = await fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha");
       const data = await response.json();
       setTiposCosecha(data);
     } catch (err) {
@@ -185,7 +185,7 @@ export default function GestionCosechas() {
         estado: formDataAgregar.estado || 'activa'
       };
 
-      const response = await fetch("http://localhost:8080/administrador/cosecha", {
+      const response = await fetch("http://192.168.0.2:8080/administrador/cosecha", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -230,7 +230,7 @@ export default function GestionCosechas() {
         estado: formDataEditar.estado || 'activa'
       };
 
-      const response = await fetch(`http://localhost:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
+      const response = await fetch(`http://192.168.0.2:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -258,7 +258,7 @@ export default function GestionCosechas() {
     if (!cosechaSeleccionada) return;
     
     try {
-      const response = await fetch(`http://localhost:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
+      const response = await fetch(`http://192.168.0.2:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
         method: "DELETE",
       });
 
@@ -343,8 +343,8 @@ export default function GestionCosechas() {
         </div>
       )}
 
-      {/* Tabla de cosechas */}
-      <div className="overflow-x-auto rounded-sm border border-gray-200">
+      {/* Vista de tabla para desktop */}
+      <div className="hidden md:block overflow-x-auto rounded-sm border border-gray-200">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-100 border-b">
@@ -407,6 +407,66 @@ export default function GestionCosechas() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Vista de tarjetas para móviles */}
+      <div className="md:hidden space-y-4">
+        {cosechasFiltradas.length > 0 ? (
+          cosechasFiltradas.map((cosecha) => (
+            <div key={cosecha.id} className="border rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="font-bold text-lg">{getNombreCuadrilla(cosecha.id_cuadrilla)}</h3>
+                  <p className="text-sm text-gray-600">ID: {cosecha.id}</p>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  cosecha.estado === 'activa' ? 'bg-blue-100 text-blue-800' :
+                  cosecha.estado === 'completada' ? 'bg-green-100 text-green-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {cosecha.estado}
+                </span>
+              </div>
+              
+              <div className="space-y-2 mb-4">
+                <div>
+                  <span className="font-medium text-gray-700">Tipo de Cosecha:</span>
+                  <p className="text-sm">{getNombreTipoCosecha(cosecha.id_tipo_cosecha)}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Fecha de Inicio:</span>
+                  <p className="text-sm">{formatFecha(cosecha.fecha_inicio)}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Fecha de Fin:</span>
+                  <p className="text-sm">{formatFecha(cosecha.fecha_fin) || "No definida"}</p>
+                </div>
+              </div>
+
+              {/* Acciones en móvil */}
+              <div className="flex gap-2">
+                <button
+                  className="flex items-center justify-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 flex-1"
+                  onClick={() => abrirModalEditar(cosecha)}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Editar
+                </button>
+                <button
+                  className="flex items-center justify-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 flex-1"
+                  onClick={() => abrirModalEliminar(cosecha)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-400">
+            No se encontraron cosechas
+          </div>
+        )}
       </div>
 
       {/* Modal Agregar Cosecha */}
