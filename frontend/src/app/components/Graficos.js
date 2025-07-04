@@ -15,14 +15,14 @@ export default function EstadisticasDashboard() {
   const [porCosecha, setPorCosecha] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentCosechaInfo, setCurrentCosechaInfo] = useState({});
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
     
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [resCosechas, resTipos] = await Promise.all([
-          fetch("http://192.168.0.2:8080/administrador/cosechas/list"),
-          fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha")
+          fetch(`${API_URL}/administrador/cosechas/list`),
+          fetch(`${API_URL}/administrador/getTipo_cosecha`)
         ]);
 
         const [dataCosechas, dataTipos] = await Promise.all([
@@ -46,7 +46,6 @@ useEffect(() => {
 
     setLoading(true);
     try {
-      const baseUrl = "http://192.168.0.2:8080";
       const cosechaParam = selectedCosecha ? `/${selectedCosecha}` : "";
 
       // Si hay una cosecha seleccionada
@@ -54,7 +53,7 @@ useEffect(() => {
         const cosecha = cosechas.find(c => c.id.toString() === selectedCosecha.toString());
         if (cosecha) {
           const tipoEncontrado = tiposCosecha.find(t => t.id.toString() === cosecha.id_tipo_cosecha.toString());
-          const resTotal = await fetch(`${baseUrl}/administrador/graficos/${selectedCosecha}/totalcapachos`);
+          const resTotal = await fetch(`${API_URL}/administrador/graficos/${selectedCosecha}/totalcapachos`);
           const { total } = await resTotal.json();
 
           setCurrentCosechaInfo({
@@ -66,8 +65,8 @@ useEffect(() => {
           });
 
           const [resDia, resCosechador] = await Promise.all([
-            fetch(`${baseUrl}/administrador/graficos/getcapachosdia${cosechaParam}`),
-            fetch(`${baseUrl}/administrador/graficos/getcapachoscosechador${cosechaParam}`)
+            fetch(`${API_URL}/administrador/graficos/getcapachosdia${cosechaParam}`),
+            fetch(`${API_URL}/administrador/graficos/getcapachoscosechador${cosechaParam}`)
           ]);
 
           const [dataDia, dataCosechador] = await Promise.all([
@@ -93,7 +92,7 @@ useEffect(() => {
         }
       } else {
         // Si NO hay cosecha seleccionada, mostrar gráfico 3
-        const resCuadrilla = await fetch(`${baseUrl}/administrador/graficos/getcapachosporcosecha`);
+        const resCuadrilla = await fetch(`${API_URL}/administrador/graficos/getcapachosporcosecha`);
         if (!resCuadrilla.ok) throw new Error("Error al cargar gráfico por cuadrilla");
         const dataCuadrilla = await resCuadrilla.json();
 

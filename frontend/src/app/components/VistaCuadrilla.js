@@ -11,6 +11,7 @@ export default function VistaCuadrilla() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [nombreCuadrilla, setNombreCuadrilla] = useState("")
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   useEffect(() => {
     // Suponiendo que el usuario logueado está en localStorage bajo "user"
@@ -20,7 +21,7 @@ export default function VistaCuadrilla() {
       setLoading(false)
       return
     }
-    fetch(`http://192.168.0.2:8080/mi-cuadrilla/${user.id}`)
+    fetch(`${API_URL}/mi-cuadrilla/${user.id}`)
       .then(res => {
         if (!res.ok) throw new Error("No tienes cuadrilla asignada")
         return res.json()

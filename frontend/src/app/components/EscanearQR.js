@@ -18,6 +18,7 @@ export default function EscanearQR() {
     const [qrData, setQrData] = useState(null);
     const [cosechasFiltradas, setCosechasFiltradas] = useState([]);
     const [cosechadorData, setCosechadorData] = useState(null);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
     // Obtener datos iniciales
     useEffect(() => {
@@ -28,7 +29,7 @@ export default function EscanearQR() {
 
     const fetchCosechas = async () => {
         try {
-            const response = await fetch("http://192.168.0.2:8080/administrador/cosecha");
+            const response = await fetch(`${API_URL}/administrador/cosecha`);
             const data = await response.json();
             setCosechas(data);
         } catch (err) {
@@ -39,7 +40,7 @@ export default function EscanearQR() {
 
     const fetchCuadrillas = async () => {
         try {
-            const response = await fetch("http://192.168.0.2:8080/cuadrillas");
+            const response = await fetch(`${API_URL}/cuadrillas`);
             const data = await response.json();
             setCuadrillas(data);
         } catch (err) {
@@ -50,7 +51,7 @@ export default function EscanearQR() {
 
     const fetchTiposCosecha = async () => {
         try {
-            const response = await fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha");
+            const response = await fetch(`${API_URL}/administrador/getTipo_cosecha`);
             const data = await response.json();
             setTiposCosecha(data);
         } catch (err) {
@@ -62,7 +63,7 @@ export default function EscanearQR() {
     // Obtener datos del cosechador por ID
     const fetchCosechadorData = async (id) => {
         try {
-            const response = await fetch(`http://192.168.0.2:8080/cosechadores/${id}`);
+            const response = await fetch(`${API_URL}/cosechadores/${id}`);
             const data = await response.json();
             setCosechadorData(data);
             return data;
@@ -103,7 +104,7 @@ export default function EscanearQR() {
         };
 
         try {
-            const response = await fetch("http://192.168.0.2:8080/registro", {
+            const response = await fetch(`${API_URL}/registro`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

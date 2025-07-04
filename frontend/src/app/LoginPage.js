@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,7 +33,7 @@ export default function LoginPage() {
     // Login real
     try {
       console.log("Iniciando sesión con:", { email, password })
-      const res = await fetch("http://192.168.0.2:8080/login", {
+      const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

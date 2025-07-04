@@ -9,9 +9,10 @@ export default function ReportesTable() {
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   useEffect(() => {
-    fetch("http://192.168.0.2:8080/administrador/reportes")
+    fetch(`${API_URL}/administrador/reportes`)
       .then((res) => {
         if (!res.ok) throw new Error("Error al cargar reportes");
         return res.json();

@@ -6,6 +6,7 @@ import { Edit, Trash, Leaf, Plus, X } from "lucide-react"
 export default function TiposCultivoTable() {
   const [cultivos, setCultivos] = useState([])
   const [busqueda, setBusqueda] = useState("")
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
   
   // Estados para el modal de agregar
   const [modalAgregar, setModalAgregar] = useState(false)
@@ -22,7 +23,7 @@ export default function TiposCultivoTable() {
   const [modalEditar, setModalEditar] = useState({ abierto: false, cultivo: null })
 
   const cargarCultivos = () => {
-    fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha")
+    fetch(`${API_URL}/administrador/getTipo_cosecha`)
       .then(res => res.json())
       .then(data => setCultivos(data))
       .catch(err => console.error("Error cargando cultivos", err))
@@ -58,7 +59,7 @@ export default function TiposCultivoTable() {
     }
 
     try {
-      const res = await fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha", {
+      const res = await fetch(`${API_URL}/administrador/getTipo_cosecha`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,7 +90,7 @@ export default function TiposCultivoTable() {
   // Confirmar eliminación
   const confirmarEliminar = async () => {
     try {
-      const res = await fetch(`http://192.168.0.2:8080/administrador/tipo_cosecha/${modalEliminar.id}`, {
+      const res = await fetch(`${API_URL}/administrador/tipo_cosecha/${modalEliminar.id}`, {
         method: "DELETE",
       })
       if (res.ok) {
@@ -123,7 +124,7 @@ export default function TiposCultivoTable() {
     if (!nombre || !precio_por_capacho) return alert("Nombre y precio son obligatorios.")
 
     try {
-      const res = await fetch(`http://192.168.0.2:8080/administrador/tipo_cosecha/${id}`, {
+      const res = await fetch(`${API_URL}/administrador/tipo_cosecha/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, descripcion, precio_por_capacho: parseInt(precio_por_capacho) }),

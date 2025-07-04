@@ -1,4 +1,4 @@
-import { Application } from "https://deno.land/x/oak/mod.ts";
+import { Application } from "@oak/oak/application";
 import mainRoutes from "./routes/mainRoutes.ts";
 import userRoutes from "./routes/userRoutes.ts";
 import encargadoRoutes from "./routes/encargadoRoutes.ts";
@@ -55,6 +55,6 @@ app.use(registroRoutes.routes());
 app.use(registroRoutes.allowedMethods());
 
 // Inicia servidor en 0.0.0.0:8080 para permitir conexiones externas
-app.listen({ hostname: "0.0.0.0", port: port });
-console.log(`Server running on http://0.0.0.0:${port}`);
+app.listen({ port: port });
+console.log(`Server running on http://localhost:${port}`);
 

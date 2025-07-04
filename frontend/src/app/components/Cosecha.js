@@ -12,6 +12,7 @@ export default function GestionCosechas() {
   const [tiposCosecha, setTiposCosecha] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos");
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
   
   // Estados para modales
   const [modalAbierto, setModalAbierto] = useState({
@@ -50,7 +51,7 @@ export default function GestionCosechas() {
 
   const fetchCosechas = async () => {
     try {
-      const response = await fetch("http://192.168.0.2:8080/administrador/cosecha");
+      const response = await fetch(`${API_URL}/administrador/cosecha`);
       const data = await response.json();
       setCosechas(data);
     } catch (err) {
@@ -61,7 +62,7 @@ export default function GestionCosechas() {
 
   const fetchCuadrillas = async () => {
     try {
-      const response = await fetch("http://192.168.0.2:8080/cuadrillas");
+      const response = await fetch(`${API_URL}/cuadrillas`);
       const data = await response.json();
       setCuadrillas(data);
     } catch (err) {
@@ -72,7 +73,7 @@ export default function GestionCosechas() {
 
   const fetchTiposCosecha = async () => {
     try {
-      const response = await fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha");
+      const response = await fetch(`${API_URL}/administrador/getTipo_cosecha`);
       const data = await response.json();
       setTiposCosecha(data);
     } catch (err) {
@@ -185,7 +186,7 @@ export default function GestionCosechas() {
         estado: formDataAgregar.estado || 'activa'
       };
 
-      const response = await fetch("http://192.168.0.2:8080/administrador/cosecha", {
+      const response = await fetch(`${API_URL}/administrador/cosecha`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -230,7 +231,7 @@ export default function GestionCosechas() {
         estado: formDataEditar.estado || 'activa'
       };
 
-      const response = await fetch(`http://192.168.0.2:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
+      const response = await fetch(`${API_URL}/administrador/cosecha/${cosechaSeleccionada.id}`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -258,7 +259,7 @@ export default function GestionCosechas() {
     if (!cosechaSeleccionada) return;
     
     try {
-      const response = await fetch(`http://192.168.0.2:8080/administrador/cosecha/${cosechaSeleccionada.id}`, {
+      const response = await fetch(`${API_URL}/administrador/cosecha/${cosechaSeleccionada.id}`, {
         method: "DELETE",
       });
 
