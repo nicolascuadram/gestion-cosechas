@@ -70,7 +70,7 @@ export default function VistaCuadrilla() {
   const hours = pad(date.getHours());
   const minutes = pad(date.getMinutes());
 
-  return `${day}-${month}-${year} ${hours}:${minutes}`;
+  return `${day}-${month}-${year}`;
 }
 
   if (loading) return <div>Cargando...</div>
