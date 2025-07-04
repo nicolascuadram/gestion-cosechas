@@ -42,7 +42,7 @@ export const getMiCuadrilla = async (ctx: Context) => {
   // Solo debería haber una cuadrilla por encargado
   const cuadrilla = cuadrillas.rows[0];
   const cosechadores = await client.queryObject(`
-    SELECT id, nombre, p_apellido, id_cuadrilla FROM cosechador WHERE id_cuadrilla = $1
+    SELECT id, rut, nombre, p_apellido, id_cuadrilla FROM cosechador WHERE id_cuadrilla = $1
   `, [cuadrilla.id]);
 
   ctx.response.body = { ...cuadrilla, cosechadores: cosechadores.rows };
