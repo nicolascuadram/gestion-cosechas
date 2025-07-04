@@ -159,7 +159,7 @@ export default function TiposCultivoTable() {
       </div>
       <div className="flex justify-start items-start mb-4">
         <input
-          className="border rounded-sm px-2 py-1 w-1/3 outline-offset-1 outline-[#16a34a]"
+          className="border rounded-sm px-2 py-1 w-full md:w-1/3 outline-offset-1 outline-[#16a34a]"
           placeholder="Buscar cultivo..."
           value={busqueda}
           type="search"
@@ -167,39 +167,89 @@ export default function TiposCultivoTable() {
         />
       </div>
 
-      <table className="w-full text-left border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">ID</th>
-            <th className="p-2">Nombre</th>
-            <th className="p-2">Valor por Capacho (CLP)</th>
-            <th className="p-2 text-right">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cultivosFiltrados.map(c => (
-            <tr key={c.id} className="border-t">
-              <td className="p-2">{c.id}</td>
-              <td className="p-2 flex items-center gap-2"><Leaf className="h-4 w-4 text-green-600" />{c.nombre}</td>
-              <td className="p-2">${c.precio_por_capacho}</td>
-              <td className="p-2 flex justify-end gap-2">
-                <button
-                  className="p-1 hover:bg-gray-200 rounded-sm"
-                  onClick={() => abrirModalEditar(c)}
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  className="p-1 hover:bg-gray-200 rounded-sm"
-                  onClick={() => abrirModalEliminar(c.id, c.nombre)}
-                >
-                  <Trash className="h-4 w-4" />
-                </button>
-              </td>
+      {/* Vista de tabla para desktop */}
+      <div className="hidden md:block">
+        <table className="w-full text-left border">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2">ID</th>
+              <th className="p-2">Nombre</th>
+              <th className="p-2">Valor por Capacho (CLP)</th>
+              <th className="p-2 text-right">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {cultivosFiltrados.map(c => (
+              <tr key={c.id} className="border-t">
+                <td className="p-2">{c.id}</td>
+                <td className="p-2 flex items-center gap-2"><Leaf className="h-4 w-4 text-green-600" />{c.nombre}</td>
+                <td className="p-2">${c.precio_por_capacho}</td>
+                <td className="p-2 flex justify-end gap-2">
+                  <button
+                    className="p-1 hover:bg-gray-200 rounded-sm"
+                    onClick={() => abrirModalEditar(c)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button
+                    className="p-1 hover:bg-gray-200 rounded-sm"
+                    onClick={() => abrirModalEliminar(c.id, c.nombre)}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Vista de tarjetas para móviles */}
+      <div className="md:hidden space-y-4">
+        {cultivosFiltrados.length === 0 ? (
+          <div className="text-center py-8 text-gray-400">No hay cultivos registrados.</div>
+        ) : (
+          cultivosFiltrados.map(c => (
+            <div key={c.id} className="border rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2">
+                  <Leaf className="h-5 w-5 text-green-600" />
+                  <div>
+                    <h3 className="font-bold text-lg">{c.nombre}</h3>
+                    <p className="text-sm text-gray-600">ID: {c.id}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className="p-2 hover:bg-gray-200 rounded"
+                    onClick={() => abrirModalEditar(c)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button
+                    className="p-2 hover:bg-gray-200 rounded"
+                    onClick={() => abrirModalEliminar(c.id, c.nombre)}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <span className="font-medium text-gray-700">Precio por capacho:</span>
+                  <p className="text-lg font-bold text-green-600">${c.precio_por_capacho}</p>
+                </div>
+                {c.descripcion && (
+                  <div>
+                    <span className="font-medium text-gray-700">Descripción:</span>
+                    <p className="text-sm">{c.descripcion}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
       {/* Modal Agregar */}
       {modalAgregar && (

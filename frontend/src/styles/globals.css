@@ -28,3 +28,73 @@
 body {
   font-family: 'Inter Variable', sans-serif;
 }
+
+/* Mejoras para el sidebar responsivo */
+@media (max-width: 768px) {
+  .sidebar-open {
+    overflow: hidden;
+  }
+}
+
+/* Animaciones suaves para el sidebar */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Evitar scroll horizontal en móviles */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Mejorar la apariencia del botón hamburguesa */
+.hamburger-button {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Estilos adicionales para el sidebar fijo */
+.sidebar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 50;
+}
+
+.main-content {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.sidebar-open {
+  margin-left: 16rem; /* 256px = w-64 */
+}
+
+/* Asegurar que el contenido principal tenga scroll independiente */
+.main-content {
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+  .main-content.sidebar-open {
+    margin-left: 0;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+}
+
+/* Prevenir scroll horizontal en dispositivos pequeños */
+@media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+}

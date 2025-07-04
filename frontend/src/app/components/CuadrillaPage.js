@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Edit, Trash, Plus, Users } from "lucide-react"
+import { Edit, Trash, Plus, Users, X } from "lucide-react"
 
 export default function CuadrillaPage() {
   const [cuadrillas, setCuadrillas] = useState([])
@@ -13,6 +13,7 @@ export default function CuadrillaPage() {
   const [asignarId, setAsignarId] = useState(null)
   const [cosechadorSeleccionado, setCosechadorSeleccionado] = useState("")
   const [error, setError] = useState("")
+  const [mostrarCosechadoresId, setMostrarCosechadoresId] = useState(null)
 
   // Fetch data
   useEffect(() => {
@@ -149,18 +150,38 @@ export default function CuadrillaPage() {
               <div>
                 <span className="text-sm text-gray-600 font-semibold">Cosechadores:</span>
                 <ul className="list-disc ml-5 mt-1 mb-2">
-                  {cosechadores.filter(co => co.id_cuadrilla === c.id).map(co =>
-                    <li key={co.id} className="flex items-center gap-2 text-sm">
-                      {co.nombre}
-                      <button
-                        className="text-xs text-red-600 hover:underline"
-                        onClick={() => handleQuitarCosechador(co.id)}
-                      >Quitar</button>
-                    </li>
-                  )}
-                  {cosechadores.filter(co => co.id_cuadrilla === c.id).length === 0 && (
-                    <li className="text-xs text-gray-400">Sin cosechadores</li>
-                  )}
+                  {(() => {
+                    const cosechadoresCuadrilla = cosechadores.filter(co => co.id_cuadrilla === c.id)
+                    const cosechadoresVisibles = cosechadoresCuadrilla.slice(0, 5)
+                    const hayMas = cosechadoresCuadrilla.length > 5
+                    
+                    return (
+                      <>
+                        {cosechadoresVisibles.map(co =>
+                          <li key={co.id} className="flex items-center gap-2 text-sm">
+                            {co.nombre}
+                            <button
+                              className="text-xs text-red-600 hover:underline"
+                              onClick={() => handleQuitarCosechador(co.id)}
+                            >Quitar</button>
+                          </li>
+                        )}
+                        {cosechadoresCuadrilla.length === 0 && (
+                          <li className="text-xs text-gray-400">Sin cosechadores</li>
+                        )}
+                        {hayMas && (
+                          <li className="text-sm">
+                            <button
+                              className="text-blue-600 hover:underline font-medium"
+                              onClick={() => setMostrarCosechadoresId(c.id)}
+                            >
+                              Mostrar más ({cosechadoresCuadrilla.length - 5} más)
+                            </button>
+                          </li>
+                        )}
+                      </>
+                    )
+                  })()}
                 </ul>
                 <button
                   className="text-xs text-green-600 hover:underline mt-1"
@@ -241,6 +262,72 @@ export default function CuadrillaPage() {
             <div className="flex gap-2 justify-end">
               <button className="px-3 py-1 rounded bg-gray-200" onClick={() => setAsignarId(null)}>Cancelar</button>
               <button className="px-3 py-1 rounded bg-green-600 text-white" onClick={handleAsignarCosechador}>Asignar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal mostrar todos los cosechadores */}
+      {mostrarCosechadoresId && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">
+                Cosechadores de {cuadrillas.find(c => c.id === mostrarCosechadoresId)?.nombre}
+              </h3>
+              <button
+                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setMostrarCosechadoresId(null)}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {cosechadores
+                .filter(co => co.id_cuadrilla === mostrarCosechadoresId)
+                .map(co => (
+                  <div key={co.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div className="font-medium">{co.nombre} {co.p_apellido}</div>
+                      <div className="text-sm text-gray-600">RUT: {co.rut}</div>
+                    </div>
+                    <button
+                      className="text-sm text-red-600 hover:bg-red-50 px-2 py-1 rounded"
+                      onClick={() => {
+                        handleQuitarCosechador(co.id)
+                        // Si ya no hay cosechadores, cerrar el modal
+                        const cosechadoresRestantes = cosechadores.filter(c => c.id_cuadrilla === mostrarCosechadoresId && c.id !== co.id)
+                        if (cosechadoresRestantes.length === 0) {
+                          setMostrarCosechadoresId(null)
+                        }
+                      }}
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                ))}
+              {cosechadores.filter(co => co.id_cuadrilla === mostrarCosechadoresId).length === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  No hay cosechadores asignados a esta cuadrilla
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2 justify-end mt-4">
+              <button
+                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                onClick={() => {
+                  setAsignarId(mostrarCosechadoresId)
+                  setMostrarCosechadoresId(null)
+                }}
+              >
+                Asignar cosechador
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                onClick={() => setMostrarCosechadoresId(null)}
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>

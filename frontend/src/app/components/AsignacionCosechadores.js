@@ -271,8 +271,8 @@ export default function AsignacionCosechadores() {
         </div>
       )}
 
-      {/* Tabla de cosechadores */}
-      <div className="overflow-x-auto rounded-sm border border-gray-200">
+      {/* Vista de tabla para desktop */}
+      <div className="hidden lg:block overflow-x-auto rounded-sm border border-gray-200">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-100 border-b">
@@ -307,10 +307,11 @@ export default function AsignacionCosechadores() {
                       {/* Select para asignar cuadrilla */}
                       <select
                         className="border border-gray-300 rounded px-2 py-1 text-sm bg-white"
-                        value={cuadrillaAsignar}
+                        value=""
                         onChange={(e) => {
-                          setCuadrillaAsignar(e.target.value);
-                          handleAsignarCuadrilla(cosechador.id, e.target.value);
+                          if (e.target.value) {
+                            handleAsignarCuadrilla(cosechador.id, e.target.value);
+                          }
                         }}
                       >
                         <option value="">Asignar a...</option>
@@ -363,6 +364,93 @@ export default function AsignacionCosechadores() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Vista de tarjetas para móviles y tablets */}
+      <div className="lg:hidden space-y-4">
+        {cosechadoresFiltrados.length > 0 ? (
+          cosechadoresFiltrados.map((cosechador) => (
+            <div key={cosechador.id} className="border rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="font-bold text-lg">
+                    {`${cosechador.nombre} ${cosechador.p_apellido}${cosechador.s_apellido ? ' ' + cosechador.s_apellido : ''}`}
+                  </h3>
+                  <p className="text-sm text-gray-600">ID: {cosechador.id} • RUT: {cosechador.rut}</p>
+                </div>
+              </div>
+              
+              <div className="mb-3">
+                <span className="font-medium text-gray-700">Cuadrilla:</span>
+                {cosechador.cuadrilla_nombre ? (
+                  <div className="flex items-center gap-1 mt-1">
+                    <Users className="h-4 w-4 text-green-600" />
+                    <span className="text-sm">{cosechador.cuadrilla_nombre}</span>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400 italic mt-1">Sin asignar</p>
+                )}
+              </div>
+
+              {/* Acciones en móvil */}
+              <div className="space-y-2">
+                {/* Select para asignar cuadrilla */}
+                <select
+                  className="border border-gray-300 rounded px-3 py-2 w-full text-sm bg-white"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleAsignarCuadrilla(cosechador.id, e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">Asignar a cuadrilla...</option>
+                  {cuadrillas.map((cuadrilla) => (
+                    <option key={cuadrilla.id} value={cuadrilla.id}>
+                      {cuadrilla.nombre}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex gap-2">
+                  {/* Botón para quitar cuadrilla */}
+                  <button
+                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded text-sm flex-1 ${cosechador.id_cuadrilla 
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                    onClick={() => handleQuitarCuadrilla(cosechador.id)}
+                    disabled={!cosechador.id_cuadrilla}
+                  >
+                    <UserMinus className="h-4 w-4" />
+                    Quitar
+                  </button>
+
+                  {/* Botón editar */}
+                  <button
+                    className="flex items-center justify-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 flex-1"
+                    onClick={() => abrirModalEditar(cosechador)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Editar
+                  </button>
+
+                  {/* Botón eliminar */}
+                  <button
+                    className="flex items-center justify-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 flex-1"
+                    onClick={() => abrirModalEliminar(cosechador)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-400">
+            No se encontraron cosechadores
+          </div>
+        )}
       </div>
 
       {/* Modal Agregar/Editar Cosechador */}
