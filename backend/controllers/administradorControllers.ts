@@ -288,6 +288,34 @@ export const updateCosecha = async (ctx: Context) => {
   }
 };
 
+ 
+export const getReportes = async (ctx: Context) => {
+  try {
+    const result = await client.queryObject(`
+      SELECT 
+        rc.id,
+        c.id AS id_cosecha,
+        co.nombre || ' ' || co.p_apellido AS nombre_cosechador,
+        cu.nombre AS nombre_cuadrilla,
+        tc.nombre AS nombre_cultivo,
+        rc.fecha,
+        rc.cantidad_capachos,
+        tc.precio_por_capacho
+      FROM registro_cosecha rc
+      JOIN cosecha c ON rc.id_cosecha = c.id
+      JOIN cosechador co ON rc.id_cosechador = co.id
+      JOIN cuadrilla cu ON c.id_cuadrilla = cu.id
+      JOIN tipo_cosecha tc ON c.id_tipo_cosecha = tc.id
+      ORDER BY rc.fecha DESC
+    `);
+    ctx.response.body = result.rows;
+  } catch (error) {
+    console.error("Error al cargar reportes:", error);
+    ctx.response.status = 500;
+    ctx.response.body = { message: "Error al cargar reportes", error: error.message };
+  }
+};
+ 
 export const deleteCosecha = async (ctx: Context) => {
   try {
     const id = ctx.params.id;
@@ -340,3 +368,4 @@ export const getSingleCosecha = async (ctx: Context) => {
     ctx.response.body = { error: error.message };
   }
 };
+ 
