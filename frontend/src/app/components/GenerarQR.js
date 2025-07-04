@@ -36,11 +36,17 @@ export default function GenerarQR({ id, rut, nombre }) {
             </button>
 
             {/* Modal */}
-            {showModal && ( 
+            {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="flex flex-col justify-center bg-white rounded-lg shadow-lg p-6 text-center relative max-w-sm w-full">
                         <div className="flex justify-center" ref={canvasRef}>
-                            <QRCodeCanvas value={qrValue} size={200} />
+                            <QRCodeCanvas
+                                value={qrValue}
+                                size={200}
+                                bgColor="#ffffff"
+                                fgColor="#000000"
+                                marginSize={4}
+                            />
                         </div>
 
                         <div className="mt-4 flex justify-center gap-3">
