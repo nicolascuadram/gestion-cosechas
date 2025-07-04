@@ -394,7 +394,7 @@ export const getTipoCosecha = async (ctx: Context) => {
   }
 };
 
-// Obtener capachos por día
+// Obtener capachos por día (solo últimos 5 días)
 export const getCapachosPorDia = async (ctx: Context) => {
   try {
     const { idCosecha } = ctx.params;
@@ -413,15 +413,17 @@ export const getCapachosPorDia = async (ctx: Context) => {
       queryParams.push(idCosecha);
     }
     
-    query += ` GROUP BY fecha ORDER BY fecha`;
+    query += ` GROUP BY fecha ORDER BY fecha DESC LIMIT 5`;
     
     const result = await client.queryObject(query, queryParams);
     
-    // Formatear datos para el gráfico
-    const formattedData = result.rows.map(row => ({
-      fecha: new Date(row.fecha).toISOString().split('T')[0],
-      total_capachos: Number(row.total_capachos)
-    }));
+    // Formatear datos para el gráfico (y ordenar ascendente para mejor visualización)
+    const formattedData = result.rows
+      .map(row => ({
+        fecha: new Date(row.fecha).toISOString().split('T')[0],
+        total_capachos: Number(row.total_capachos)
+      }))
+      .reverse(); // Invertir para mostrar del más antiguo al más reciente
     
     ctx.response.body = formattedData;
     ctx.response.type = "application/json";
@@ -435,7 +437,7 @@ export const getCapachosPorDia = async (ctx: Context) => {
   }
 };
 
-// Obtener capachos por cosechador
+// Obtener capachos por cosechador (solo primeros 5)
 export const getCapachosPorCosechador = async (ctx: Context) => {
   try {
     const { idCosecha } = ctx.params;
@@ -455,7 +457,7 @@ export const getCapachosPorCosechador = async (ctx: Context) => {
       queryParams.push(idCosecha);
     }
     
-    query += ` GROUP BY co.nombre, co.p_apellido ORDER BY total DESC`;
+    query += ` GROUP BY co.nombre, co.p_apellido ORDER BY total DESC LIMIT 5`;
     
     const result = await client.queryObject(query, queryParams);
     
@@ -477,36 +479,73 @@ export const getCapachosPorCosechador = async (ctx: Context) => {
   }
 };
 
-// Obtener capachos por cuadrilla
-export const getCapachosPorCuadrilla = async (ctx: Context) => {
+
+
+export const getCosechasConCapachos = async (ctx: Context) => {
   try {
     const query = `
-      SELECT 
-        c.nombre as cuadrilla, 
-        SUM(rc.cantidad_capachos) as total
-      FROM registro_cosecha rc
-      JOIN cosecha ch ON rc.id_cosecha = ch.id
+      SELECT
+        ch.id AS id_cosecha,
+        c.nombre AS cuadrilla,
+        tc.nombre AS tipo_cosecha,
+        ch.fecha_inicio,
+        ch.fecha_fin,
+        ch.estado,
+        COALESCE(SUM(rc.cantidad_capachos), 0) AS total_capachos
+      FROM cosecha ch
       JOIN cuadrilla c ON ch.id_cuadrilla = c.id
-      GROUP BY c.nombre
-      ORDER BY total DESC
+      JOIN tipo_cosecha tc ON ch.id_tipo_cosecha = tc.id
+      LEFT JOIN registro_cosecha rc ON ch.id = rc.id_cosecha
+      GROUP BY ch.id, c.nombre, tc.nombre, ch.fecha_inicio, ch.fecha_fin, ch.estado
+      ORDER BY ch.fecha_inicio DESC
     `;
     
     const result = await client.queryObject(query);
-    
-    // Formatear datos para el gráfico
+
     const formattedData = result.rows.map(row => ({
+      id_cosecha: row.id_cosecha,
       cuadrilla: row.cuadrilla,
-      total: Number(row.total)
+      tipo_cosecha: row.tipo_cosecha,
+      fecha_inicio: row.fecha_inicio,
+      fecha_fin: row.fecha_fin,
+      estado: row.estado,
+      total_capachos: Number(row.total_capachos)
     }));
-    
+
     ctx.response.body = formattedData;
     ctx.response.type = "application/json";
   } catch (error) {
-    console.error("Error en getCapachosPorCuadrilla:", error);
+    console.error("Error en getCosechasConCapachos:", error);
     ctx.response.status = 500;
-    ctx.response.body = { 
-      error: "Error al obtener los capachos por cuadrilla",
+    ctx.response.body = {
+      error: "Error al obtener las cosechas y capachos",
       details: error.message
     };
+  }
+};
+
+
+// Obtener el TOTAL de capachos para una cosecha (todos los días)
+// Nuevo endpoint para obtener el total de capachos por cosecha
+export const getTotalCapachos = async (ctx: Context) => {
+  try {
+    const { idCosecha } = ctx.params;
+    
+    const query = `
+      SELECT SUM(cantidad_capachos) as total 
+      FROM registro_cosecha 
+      WHERE id_cosecha = $1
+    `;
+    
+    const result = await client.queryObject(query, [idCosecha]);
+    
+    ctx.response.body = {
+      total: Number(result.rows[0]?.total) || 0
+    };
+    ctx.response.status = 200;
+  } catch (error) {
+    console.error("Error en getTotalCapachos:", error);
+    ctx.response.status = 500;
+    ctx.response.body = { error: "Error al calcular el total" };
   }
 };
