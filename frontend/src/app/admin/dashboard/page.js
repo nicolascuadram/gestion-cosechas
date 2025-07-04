@@ -9,6 +9,7 @@ import CuadrillaPage from "@/app/components/CuadrillaPage"
 import Cosecha from "@/app/components/Cosecha"
 import Graficos from "@/app/components/Graficos"
 import { User, Bell } from "lucide-react"
+import ReportesTable from "@/app/components/ReportesTable"
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("encargados")
@@ -26,6 +27,7 @@ export default function AdminDashboard() {
           {activeTab === "cultivos" && <TiposCultivoTable />}
           {activeTab === "cosecha" && <Cosecha />}
           {activeTab === "asignacion" && <AsignacionCosechadores />}
+          {activeTab === "reportes" && <ReportesTable />}
           {activeTab === "estadisticas" && <Graficos />}
           {/* Puedes agregar más vistas aquí según el tab */}
         </section>

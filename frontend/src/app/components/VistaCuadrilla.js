@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Search, User, Calendar, Package } from "lucide-react"
+import GenerarQR from './GenerarQR';
 
 export default function VistaCuadrilla() {
   const [cosechadores, setCosechadores] = useState([])
@@ -113,7 +114,7 @@ export default function VistaCuadrilla() {
         {cosechadoresFiltrados.map((cosechador) => (
           <div key={cosechador.id} className="border rounded-sm shadow-xs overflow-hidden bg-white flex flex-col">
             <div className="p-6 flex-1 flex flex-col">
-              <div className="flex items-start justify-between">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="bg-green-100 p-2 rounded-full">
                     <User className="h-6 w-6 text-green-600" />
@@ -146,10 +147,11 @@ export default function VistaCuadrilla() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 p-4 flex justify-end">
-              <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
+            <div className="bg-gray-50 p-4 flex justify-between items-center">
+              <GenerarQR id={cosechador.id} rut={cosechador.documento} nombre={cosechador.nombre} />
+              {/* <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
                 Gestionar
-              </button>
+              </button> */}
             </div>
           </div>
         ))}
