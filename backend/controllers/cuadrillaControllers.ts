@@ -25,28 +25,62 @@ export const getCuadrillas = async (ctx: Context) => {
 
 export const getMiCuadrilla = async (ctx: Context) => {
   const idEncargado = ctx.params.idEncargado;
+
+  // Obtener la cuadrilla asignada al encargado
   const cuadrillas = await client.queryObject(`
-    SELECT c.id, c.nombre, c.id_encargado, e.nombre AS encargado_nombre, e.p_apellido AS encargado_p_apellido
+    SELECT 
+      c.id, 
+      c.nombre, 
+      c.id_encargado, 
+      e.nombre AS encargado_nombre, 
+      e.p_apellido AS encargado_p_apellido
     FROM cuadrilla c
     LEFT JOIN encargados e ON c.id_encargado = e.id
     WHERE c.id_encargado = $1
     ORDER BY c.id
   `, [idEncargado]);
 
+  // Verificar si tiene una cuadrilla asignada
   if (cuadrillas.rows.length === 0) {
     ctx.response.status = 404;
     ctx.response.body = { message: "No tienes cuadrilla asignada" };
     return;
   }
 
-  // Solo debería haber una cuadrilla por encargado
   const cuadrilla = cuadrillas.rows[0];
+
+  // Obtener cosechadores de la cuadrilla con su última entrega
   const cosechadores = await client.queryObject(`
-    SELECT id, rut, nombre, p_apellido, id_cuadrilla FROM cosechador WHERE id_cuadrilla = $1
+    SELECT 
+      co.id,
+      co.rut,
+      co.nombre,
+      co.p_apellido,
+      co.id_cuadrilla,
+      'activo' AS estado,
+      rc.fecha AS "ultimaEntrega",
+      rc.cantidad_capachos AS "cantidadUltima"
+    FROM cosechador co
+    LEFT JOIN LATERAL (
+      SELECT 
+        fecha,
+        cantidad_capachos
+      FROM registro_cosecha
+      WHERE id_cosechador = co.id
+      ORDER BY fecha DESC
+      LIMIT 1
+    ) rc ON true
+    WHERE co.id_cuadrilla = $1
   `, [cuadrilla.id]);
 
-  ctx.response.body = { ...cuadrilla, cosechadores: cosechadores.rows };
+  // Devolver cuadrilla con sus cosechadores
+  ctx.response.status = 200;
+  ctx.response.body = {
+    ...cuadrilla,
+    cosechadores: cosechadores.rows,
+  };
 };
+
 
 // Crear cuadrilla
 export const createCuadrilla = async (ctx: Context) => {

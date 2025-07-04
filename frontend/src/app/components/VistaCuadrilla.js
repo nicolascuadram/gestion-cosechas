@@ -34,7 +34,9 @@ export default function VistaCuadrilla() {
             nombre: `${c.nombre} ${c.p_apellido}`,
             documento: c.rut || c.documento || "",
             estado: c.estado || "activo", // Ajusta según tu modelo
-            ultimaEntrega: c.ultimaEntrega || "-",
+                ultimaEntrega: c.ultimaEntrega 
+      ? formatDateTime(c.ultimaEntrega) 
+      : "-",
             cantidadUltima: c.cantidadUltima || "-",
           }))
         )
@@ -54,6 +56,22 @@ export default function VistaCuadrilla() {
     const cumpleFiltroEstado = filtroEstado === null || c.estado === filtroEstado
     return cumpleBusqueda && cumpleFiltroEstado
   })
+
+  function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  if (isNaN(date)) return "-";
+
+  const pad = (n) => n.toString().padStart(2, "0");
+
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
 
   if (loading) return <div>Cargando...</div>
   if (error) return <div className="text-red-600">{error}</div>
@@ -134,18 +152,29 @@ export default function VistaCuadrilla() {
                   {cosechador.estado === "activo" ? "Activo" : "Inactivo"}
                 </span>
               </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center text-sm">
-                  <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                  <span className="text-gray-500">Última entrega:</span>
-                  <span className="ml-1">{cosechador.ultimaEntrega}</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <Package className="h-4 w-4 mr-2 text-gray-400" />
-                  <span className="text-gray-500">Cantidad:</span>
-                  <span className="ml-1">{cosechador.cantidadUltima} capachos</span>
-                </div>
-              </div>
+              
+              
+              <div className="mt-4 space-y-3">
+  {/* Fecha de última entrega - Versión mejorada */}
+  <div className="flex items-start text-sm text-gray-600">
+    <Calendar className="h-5 w-5 mr-3 text-indigo-400 flex-shrink-0" />
+    <div>
+      <span className="font-medium text-gray-700 mr-1">Entrega:</span>
+      <span className="text-gray-800 break-words">
+        {cosechador.ultimaEntrega}
+      </span>
+    </div>
+  </div>
+
+  {/* Cantidad - Versión consistente */}
+  <div className="flex items-center text-sm text-gray-600">
+    <Package className="h-5 w-5 mr-3 text-indigo-400 flex-shrink-0" />
+    <div>
+      <span className="font-medium text-gray-700 mr-1">Cantidad:</span>
+      <span className="text-gray-800">{cosechador.cantidadUltima} capachos</span>
+    </div>
+  </div>
+</div>
             </div>
             <div className="bg-gray-50 p-4 flex justify-between items-center">
               <GenerarQR id={cosechador.id} rut={cosechador.documento} nombre={cosechador.nombre} />
