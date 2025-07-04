@@ -1,7 +1,9 @@
 // File: administradorRoutes.ts
 import { Router } from "@oak/oak/router";
 
-import { getTipo_cosecha, createTipo_cosecha, updateTipo_cosecha, deleteTipo_cosecha, getCosecha, addCosecha, updateCosecha, deleteCosecha, getSingleCosecha, getReportes } from "../controllers/administradorControllers.ts";
+import { getTipo_cosecha, createTipo_cosecha, updateTipo_cosecha, deleteTipo_cosecha, getCosecha, addCosecha, updateCosecha, deleteCosecha, getSingleCosecha,
+    getCapachosPorDia, getCapachosPorCosechador, getCapachosPorCosecha, getCosechasList, getCosechasConCapachos, getTotalCapachos
+, getReportes } from "../controllers/administradorControllers.ts";
 
 
 const router = new Router();
@@ -17,6 +19,12 @@ router.put("/administrador/cosecha/:id", updateCosecha);
 router.delete("/administrador/cosecha/:id", deleteCosecha);
 router.get("/administrador/cosecha/:id", getSingleCosecha);
 router.get("/administrador/reportes", getReportes);
+router.get("/administrador/cosechas/list", getCosechasList);
+router.get("/administrador/graficos/getcapachosdia/:idCosecha?", getCapachosPorDia);
+router.get("/administrador/graficos/getcapachoscosechador/:idCosecha?", getCapachosPorCosechador);
+router.get("/administrador/graficos/getcapachosporcosecha", getCosechasConCapachos);
+//router.get("/administrador/graficos/getcapachosporcosecha", getCapachosPorCosecha);
+router.get('/administrador/graficos/:idCosecha/totalcapachos', getTotalCapachos);
 
 export default router;
 

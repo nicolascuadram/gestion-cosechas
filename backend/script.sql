@@ -1,65 +1,290 @@
-CREATE TABLE usuario (
-  id SERIAL PRIMARY KEY,
-  rut VARCHAR(10) UNIQUE NOT NULL,
-  nombre VARCHAR(50) NOT NULL,
-  p_apellido VARCHAR(50) NOT NULL,
-  s_apellido VARCHAR(50),
-  tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('administrador', 'encargado')),
-  contraseña VARCHAR(20)
-);
+  CREATE TABLE IF NOT EXISTS usuario (
+    id SERIAL PRIMARY KEY,
+    rut VARCHAR(10) UNIQUE NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    p_apellido VARCHAR(50) NOT NULL,
+    s_apellido VARCHAR(50),
+    contraseña VARCHAR(20)
+  );
 
-CREATE TABLE IF NOT EXISTS encargados (
-  id SERIAL PRIMARY KEY,
-  rut VARCHAR(12) UNIQUE NOT NULL,
-  nombre VARCHAR(100) NOT NULL,
-  p_apellido VARCHAR(100) NOT NULL,
-  email VARCHAR(150) UNIQUE NOT NULL,
-  telefono VARCHAR(30),
-  password VARCHAR(255) NOT NULL,
-  empresa VARCHAR(100),
-  region VARCHAR(100),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+  CREATE TABLE IF NOT EXISTS encargados (
+    id SERIAL PRIMARY KEY,
+    rut VARCHAR(12) UNIQUE NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    p_apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(30),
+    password VARCHAR(255) NOT NULL,
+    empresa VARCHAR(100),
+    region VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
 
-CREATE TABLE cuadrilla (
-  id SERIAL PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL,
-  id_encargado INTEGER REFERENCES encargados(id)
-);
+  CREATE TABLE cuadrilla (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    id_encargado INTEGER REFERENCES encargados(id)
+  );
 
-CREATE TABLE cosechador (
-  id SERIAL PRIMARY KEY,
-  rut VARCHAR(10) UNIQUE NOT NULL,
-  nombre VARCHAR(50) NOT NULL,
-  p_apellido VARCHAR(50) NOT NULL,
-  s_apellido VARCHAR(50),
-  id_cuadrilla INTEGER REFERENCES cuadrilla(id)
-);
+  CREATE TABLE cosechador (
+    id SERIAL PRIMARY KEY,
+    rut VARCHAR(10) UNIQUE NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    p_apellido VARCHAR(50) NOT NULL,
+    s_apellido VARCHAR(50),
+    id_cuadrilla INTEGER REFERENCES cuadrilla(id)
+  );
 
-CREATE TABLE tipo_cosecha (
-  id SERIAL PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL UNIQUE,
-  descripcion TEXT,
-  precio_por_capacho INTEGER NOT NULL
-);
+  CREATE TABLE tipo_cosecha (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    descripcion TEXT,
+    precio_por_capacho INTEGER NOT NULL
+  );
 
-CREATE TABLE cosecha (
-  id SERIAL PRIMARY KEY,
-  id_cuadrilla INTEGER NOT NULL REFERENCES cuadrilla(id),
-  id_tipo_cosecha INTEGER NOT NULL REFERENCES tipo_cosecha(id),
-  fecha_inicio DATE NOT NULL,
-  fecha_fin DATE,
-  estado VARCHAR(20) DEFAULT 'activa' CHECK (estado IN ('activa', 'completada', 'cancelada'))
-  CONSTRAINT valid_date_range CHECK (
-    fecha_fin IS NULL OR fecha_fin >= fecha_inicio
-  )
-);
+  CREATE TABLE cosecha (
+    id SERIAL PRIMARY KEY,
+    id_cuadrilla INTEGER NOT NULL REFERENCES cuadrilla(id),
+    id_tipo_cosecha INTEGER NOT NULL REFERENCES tipo_cosecha(id),
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE,
+    estado VARCHAR(20) DEFAULT 'activa' CHECK (estado IN ('activa', 'completada', 'cancelada'))
+    CONSTRAINT valid_date_range CHECK (
+      fecha_fin IS NULL OR fecha_fin >= fecha_inicio
+    )
+  );
 
-CREATE TABLE registro_cosecha (
-  id SERIAL PRIMARY KEY,
-  id_cosecha INTEGER NOT NULL REFERENCES cosecha(id),
-  id_cosechador INTEGER NOT NULL REFERENCES cosechador(id),
-  fecha DATE NOT NULL DEFAULT CURRENT_DATE,
-  cantidad_capachos INTEGER NOT NULL DEFAULT 0
-);
+  CREATE TABLE registro_cosecha(
+    id SERIAL PRIMARY KEY,
+    id_cosecha INTEGER NOT NULL REFERENCES cosecha(id),
+    id_cosechador INTEGER NOT NULL REFERENCES cosechador(id),
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+    cantidad_capachos INTEGER NOT NULL DEFAULT 0
+  );
 
+-- Usuarios
+INSERT INTO usuario (rut, nombre, p_apellido, s_apellido, contraseña) VALUES
+('12345678-9', 'Juan', 'Pérez', 'González', 'juan123'),
+('98765432-1', 'María', 'López', 'Martínez', 'maria456');
+
+INSERT INTO encargados (rut, nombre, p_apellido, email, telefono, password, empresa, region) VALUES
+('12345678-9', 'Encargado', 'Cosecha', 'encargado@cosecha.com', '+52212345678', 'encargado', 'Empresa Cosecha','Metropolitana'),
+('11222333-4', 'Carlos', 'Mendoza', 'carlos.mendoza@empresa.com', '+56912345678', '$2a$10$xJwL5', 'Agrícola del Valle', 'Valparaíso'),
+('22333444-5', 'Ana', 'Silva', 'ana.silva@fruticola.com', '+56923456789', '$2a$10$yKpM6', 'Frutícola Central', 'O''Higgins'),
+('33444555-6', 'Pedro', 'Rojas', 'pedro.rojas@huertos.cl', '+56934567890', '$2a$10$zLqN7', 'Huertos del Sur', 'Maule'),
+('44555666-7', 'Lucía', 'Vargas', 'lucia.vargas@agropec.com', '+56945678901', '$2a$10$aMbO8', 'Agropecuaria Norte', 'Coquimbo'),
+('55666777-8', 'Roberto', 'Fuentes', 'roberto.fuentes@export.cl', '+56956789012', '$2a$10$bNcP9', 'Exportadora Frutícola', 'Metropolitana');
+
+-- Cuadrillas
+INSERT INTO cuadrilla (nombre, id_encargado) VALUES
+('Cuadrilla Norte', 1),
+('Cuadrilla Sur', 2);
+
+-- Cosechadores (40 en total, 20 por cuadrilla)
+-- Cuadrilla Norte (1-20)
+INSERT INTO cosechador (rut, nombre, p_apellido, s_apellido, id_cuadrilla) VALUES
+('1111111-1', 'Juan', 'Pérez', 'González', 1),
+('1111112-2', 'Pedro', 'Gómez', 'Martínez', 1),
+('1111113-3', 'Diego', 'López', 'Sánchez', 1),
+('1111114-4', 'Manuel', 'Rodríguez', 'Fernández', 1),
+('1111115-5', 'José', 'Hernández', 'García', 1),
+('1111116-6', 'Francisco', 'Díaz', 'Pérez', 1),
+('1111117-7', 'Antonio', 'Moreno', 'Gómez', 1),
+('1111118-8', 'Javier', 'Álvarez', 'Martínez', 1),
+('1111119-9', 'Miguel', 'Romero', 'Sánchez', 1),
+('1111120-0', 'Daniel', 'Navarro', 'Fernández', 1),
+('1111121-1', 'Alejandro', 'Torres', 'García', 1),
+('1111122-2', 'Rafael', 'Domínguez', 'Pérez', 1),
+('1111123-3', 'Luis', 'Vázquez', 'Gómez', 1),
+('1111124-4', 'Alberto', 'Molina', 'Martínez', 1),
+('1111125-5', 'Jorge', 'Morales', 'Sánchez', 1),
+('1111126-6', 'Pablo', 'Delgado', 'Fernández', 1),
+('1111127-7', 'Fernando', 'Castro', 'García', 1),
+('1111128-8', 'Ricardo', 'Ortiz', 'Pérez', 1),
+('1111129-9', 'Eduardo', 'Rubio', 'Gómez', 1),
+('1111130-0', 'Mario', 'Méndez', 'Martínez', 1);
+
+-- Cuadrilla Sur (21-40)
+INSERT INTO cosechador (rut, nombre, p_apellido, s_apellido, id_cuadrilla) VALUES
+('2222221-1', 'Sergio', 'Iglesias', 'Sánchez', 2),
+('2222222-2', 'Alfonso', 'Cortés', 'Fernández', 2),
+('2222223-3', 'Joaquín', 'Giménez', 'García', 2),
+('2222224-4', 'Víctor', 'Herrera', 'Pérez', 2),
+('2222225-5', 'Raúl', 'Reyes', 'Gómez', 2),
+('2222226-6', 'Adrián', 'Flores', 'Martínez', 2),
+('2222227-7', 'Iván', 'Peña', 'Sánchez', 2),
+('2222228-8', 'Óscar', 'Crespo', 'Fernández', 2),
+('2222229-9', 'Rubén', 'Campos', 'García', 2),
+('2222230-0', 'Enrique', 'Soto', 'Pérez', 2),
+('2222231-1', 'Felipe', 'Guillén', 'Gómez', 2),
+('2222232-2', 'Julián', 'Pardo', 'Martínez', 2),
+('2222233-3', 'Diego', 'Bravo', 'Sánchez', 2),
+('2222234-4', 'Gabriel', 'Roldán', 'Fernández', 2),
+('2222235-5', 'Salvador', 'Gallardo', 'García', 2),
+('2222236-6', 'Emilio', 'Valero', 'Pérez', 2),
+('2222237-7', 'Marcos', 'Paredes', 'Gómez', 2),
+('2222238-8', 'Ignacio', 'Arias', 'Martínez', 2),
+('2222239-9', 'Héctor', 'Carmona', 'Sánchez', 2),
+('2222240-0', 'Agustín', 'Varela', 'Fernández', 2);
+
+-- Tipos de Cosecha
+INSERT INTO tipo_cosecha (nombre, descripcion, precio_por_capacho) VALUES
+('Uva de Mesa', 'Cosecha de uva de mesa para exportación', 1500),
+('Manzanas', 'Cosecha de manzanas variedad Fuji', 1200),
+('Naranjas', 'Cosecha de naranjas para jugo', 1000),
+('Paltas Hass', 'Cosecha de paltas variedad Hass', 1800),
+('Arándanos', 'Cosecha de arándanos premium', 2000),
+('Limones', 'Cosecha de limones de exportación', 900);
+
+-- Cosechas
+INSERT INTO cosecha (id_cuadrilla, id_tipo_cosecha, fecha_inicio, fecha_fin, estado) VALUES
+(1, 1, '2023-03-01', '2023-03-10', 'completada'),
+(2, 2, '2023-03-15', '2023-03-25', 'completada'),
+(1, 4, '2023-04-01', NULL, 'activa');
+
+-- Registros de Cosecha (5 días para cada cosechador)
+-- Cosechadores 1-20 (Cuadrilla Norte - Cosecha 1)
+INSERT INTO registro_cosecha (id_cosecha, id_cosechador, fecha, cantidad_capachos) VALUES
+-- Cosechador 1
+(1, 1, '2023-03-01', 15),
+(1, 1, '2023-03-02', 18),
+(1, 1, '2023-03-03', 20),
+(1, 1, '2023-03-04', 17),
+(1, 1, '2023-03-05', 19),
+
+-- Cosechador 2
+(1, 2, '2023-03-01', 14),
+(1, 2, '2023-03-02', 16),
+(1, 2, '2023-03-03', 18),
+(1, 2, '2023-03-04', 15),
+(1, 2, '2023-03-05', 17),
+
+-- Cosechador 3
+(1, 3, '2023-03-01', 16),
+(1, 3, '2023-03-02', 18),
+(1, 3, '2023-03-03', 20),
+(1, 3, '2023-03-04', 17),
+(1, 3, '2023-03-05', 19),
+
+-- Cosechador 4
+(1, 4, '2023-03-01', 13),
+(1, 4, '2023-03-02', 15),
+(1, 4, '2023-03-03', 17),
+(1, 4, '2023-03-04', 14),
+(1, 4, '2023-03-05', 16),
+
+-- Cosechador 5
+(1, 5, '2023-03-01', 12),
+(1, 5, '2023-03-02', 14),
+(1, 5, '2023-03-03', 16),
+(1, 5, '2023-03-04', 13),
+(1, 5, '2023-03-05', 15),
+
+-- Cosechadores 6-10
+(1, 6, '2023-03-01', 15), (1, 6, '2023-03-02', 17), (1, 6, '2023-03-03', 19), (1, 6, '2023-03-04', 16), (1, 6, '2023-03-05', 18),
+(1, 7, '2023-03-01', 14), (1, 7, '2023-03-02', 16), (1, 7, '2023-03-03', 18), (1, 7, '2023-03-04', 15), (1, 7, '2023-03-05', 17),
+(1, 8, '2023-03-01', 13), (1, 8, '2023-03-02', 15), (1, 8, '2023-03-03', 17), (1, 8, '2023-03-04', 14), (1, 8, '2023-03-05', 16),
+(1, 9, '2023-03-01', 16), (1, 9, '2023-03-02', 18), (1, 9, '2023-03-03', 20), (1, 9, '2023-03-04', 17), (1, 9, '2023-03-05', 19),
+(1, 10, '2023-03-01', 15), (1, 10, '2023-03-02', 17), (1, 10, '2023-03-03', 19), (1, 10, '2023-03-04', 16), (1, 10, '2023-03-05', 18),
+
+-- Cosechadores 11-15
+(1, 11, '2023-03-01', 14), (1, 11, '2023-03-02', 16), (1, 11, '2023-03-03', 18), (1, 11, '2023-03-04', 15), (1, 11, '2023-03-05', 17),
+(1, 12, '2023-03-01', 13), (1, 12, '2023-03-02', 15), (1, 12, '2023-03-03', 17), (1, 12, '2023-03-04', 14), (1, 12, '2023-03-05', 16),
+(1, 13, '2023-03-01', 12), (1, 13, '2023-03-02', 14), (1, 13, '2023-03-03', 16), (1, 13, '2023-03-04', 13), (1, 13, '2023-03-05', 15),
+(1, 14, '2023-03-01', 15), (1, 14, '2023-03-02', 17), (1, 14, '2023-03-03', 19), (1, 14, '2023-03-04', 16), (1, 14, '2023-03-05', 18),
+(1, 15, '2023-03-01', 14), (1, 15, '2023-03-02', 16), (1, 15, '2023-03-03', 18), (1, 15, '2023-03-04', 15), (1, 15, '2023-03-05', 17),
+
+-- Cosechadores 16-20
+(1, 16, '2023-03-01', 13), (1, 16, '2023-03-02', 15), (1, 16, '2023-03-03', 17), (1, 16, '2023-03-04', 14), (1, 16, '2023-03-05', 16),
+(1, 17, '2023-03-01', 12), (1, 17, '2023-03-02', 14), (1, 17, '2023-03-03', 16), (1, 17, '2023-03-04', 13), (1, 17, '2023-03-05', 15),
+(1, 18, '2023-03-01', 15), (1, 18, '2023-03-02', 17), (1, 18, '2023-03-03', 19), (1, 18, '2023-03-04', 16), (1, 18, '2023-03-05', 18),
+(1, 19, '2023-03-01', 14), (1, 19, '2023-03-02', 16), (1, 19, '2023-03-03', 18), (1, 19, '2023-03-04', 15), (1, 19, '2023-03-05', 17),
+(1, 20, '2023-03-01', 13), (1, 20, '2023-03-02', 15), (1, 20, '2023-03-03', 17), (1, 20, '2023-03-04', 14), (1, 20, '2023-03-05', 16);
+
+-- Cosechadores 21-40 (Cuadrilla Sur - Cosecha 2)
+INSERT INTO registro_cosecha (id_cosecha, id_cosechador, fecha, cantidad_capachos) VALUES
+-- Cosechador 21
+(2, 21, '2023-03-15', 12),
+(2, 21, '2023-03-16', 14),
+(2, 21, '2023-03-17', 16),
+(2, 21, '2023-03-18', 13),
+(2, 21, '2023-03-19', 15),
+
+-- Cosechador 22
+(2, 22, '2023-03-15', 11),
+(2, 22, '2023-03-16', 13),
+(2, 22, '2023-03-17', 15),
+(2, 22, '2023-03-18', 12),
+(2, 22, '2023-03-19', 14),
+
+-- Cosechador 23
+(2, 23, '2023-03-15', 10),
+(2, 23, '2023-03-16', 12),
+(2, 23, '2023-03-17', 14),
+(2, 23, '2023-03-18', 11),
+(2, 23, '2023-03-19', 13),
+
+-- Cosechador 24
+(2, 24, '2023-03-15', 12),
+(2, 24, '2023-03-16', 14),
+(2, 24, '2023-03-17', 16),
+(2, 24, '2023-03-18', 13),
+(2, 24, '2023-03-19', 15),
+
+-- Cosechador 25
+(2, 25, '2023-03-15', 11),
+(2, 25, '2023-03-16', 13),
+(2, 25, '2023-03-17', 15),
+(2, 25, '2023-03-18', 12),
+(2, 25, '2023-03-19', 14),
+
+-- Cosechadores 26-30
+(2, 26, '2023-03-15', 10), (2, 26, '2023-03-16', 12), (2, 26, '2023-03-17', 14), (2, 26, '2023-03-18', 11), (2, 26, '2023-03-19', 13),
+(2, 27, '2023-03-15', 12), (2, 27, '2023-03-16', 14), (2, 27, '2023-03-17', 16), (2, 27, '2023-03-18', 13), (2, 27, '2023-03-19', 15),
+(2, 28, '2023-03-15', 11), (2, 28, '2023-03-16', 13), (2, 28, '2023-03-17', 15), (2, 28, '2023-03-18', 12), (2, 28, '2023-03-19', 14),
+(2, 29, '2023-03-15', 10), (2, 29, '2023-03-16', 12), (2, 29, '2023-03-17', 14), (2, 29, '2023-03-18', 11), (2, 29, '2023-03-19', 13),
+(2, 30, '2023-03-15', 12), (2, 30, '2023-03-16', 14), (2, 30, '2023-03-17', 16), (2, 30, '2023-03-18', 13), (2, 30, '2023-03-19', 15),
+
+-- Cosechadores 31-35
+(2, 31, '2023-03-15', 11), (2, 31, '2023-03-16', 13), (2, 31, '2023-03-17', 15), (2, 31, '2023-03-18', 12), (2, 31, '2023-03-19', 14),
+(2, 32, '2023-03-15', 10), (2, 32, '2023-03-16', 12), (2, 32, '2023-03-17', 14), (2, 32, '2023-03-18', 11), (2, 32, '2023-03-19', 13),
+(2, 33, '2023-03-15', 12), (2, 33, '2023-03-16', 14), (2, 33, '2023-03-17', 16), (2, 33, '2023-03-18', 13), (2, 33, '2023-03-19', 15),
+(2, 34, '2023-03-15', 11), (2, 34, '2023-03-16', 13), (2, 34, '2023-03-17', 15), (2, 34, '2023-03-18', 12), (2, 34, '2023-03-19', 14),
+(2, 35, '2023-03-15', 10), (2, 35, '2023-03-16', 12), (2, 35, '2023-03-17', 14), (2, 35, '2023-03-18', 11), (2, 35, '2023-03-19', 13),
+
+-- Cosechadores 36-40
+(2, 36, '2023-03-15', 12), (2, 36, '2023-03-16', 14), (2, 36, '2023-03-17', 16), (2, 36, '2023-03-18', 13), (2, 36, '2023-03-19', 15),
+(2, 37, '2023-03-15', 11), (2, 37, '2023-03-16', 13), (2, 37, '2023-03-17', 15), (2, 37, '2023-03-18', 12), (2, 37, '2023-03-19', 14),
+(2, 38, '2023-03-15', 10), (2, 38, '2023-03-16', 12), (2, 38, '2023-03-17', 14), (2, 38, '2023-03-18', 11), (2, 38, '2023-03-19', 13),
+(2, 39, '2023-03-15', 12), (2, 39, '2023-03-16', 14), (2, 39, '2023-03-17', 16), (2, 39, '2023-03-18', 13), (2, 39, '2023-03-19', 15),
+(2, 40, '2023-03-15', 11), (2, 40, '2023-03-16', 13), (2, 40, '2023-03-17', 15), (2, 40, '2023-03-18', 12), (2, 40, '2023-03-19', 14);
+
+-- Registros para cosecha activa (Cosechadores 1-20 en Cosecha 3)
+INSERT INTO registro_cosecha (id_cosecha, id_cosechador, fecha, cantidad_capachos) VALUES
+-- Primeros 5 cosechadores
+(3, 1, '2023-04-01', 8), (3, 1, '2023-04-02', 10), (3, 1, '2023-04-03', 12), (3, 1, '2023-04-04', 9), (3, 1, '2023-04-05', 11),
+(3, 2, '2023-04-01', 7), (3, 2, '2023-04-02', 9), (3, 2, '2023-04-03', 11), (3, 2, '2023-04-04', 8), (3, 2, '2023-04-05', 10),
+(3, 3, '2023-04-01', 9), (3, 3, '2023-04-02', 11), (3, 3, '2023-04-03', 13), (3, 3, '2023-04-04', 10), (3, 3, '2023-04-05', 12),
+(3, 4, '2023-04-01', 8), (3, 4, '2023-04-02', 10), (3, 4, '2023-04-03', 12), (3, 4, '2023-04-04', 9), (3, 4, '2023-04-05', 11),
+(3, 5, '2023-04-01', 7), (3, 5, '2023-04-02', 9), (3, 5, '2023-04-03', 11), (3, 5, '2023-04-04', 8), (3, 5, '2023-04-05', 10),
+
+-- Cosechadores 6-10
+(3, 6, '2023-04-01', 9), (3, 6, '2023-04-02', 11), (3, 6, '2023-04-03', 13), (3, 6, '2023-04-04', 10), (3, 6, '2023-04-05', 12),
+(3, 7, '2023-04-01', 8), (3, 7, '2023-04-02', 10), (3, 7, '2023-04-03', 12), (3, 7, '2023-04-04', 9), (3, 7, '2023-04-05', 11),
+(3, 8, '2023-04-01', 7), (3, 8, '2023-04-02', 9), (3, 8, '2023-04-03', 11), (3, 8, '2023-04-04', 8), (3, 8, '2023-04-05', 10),
+(3, 9, '2023-04-01', 9), (3, 9, '2023-04-02', 11), (3, 9, '2023-04-03', 13), (3, 9, '2023-04-04', 10), (3, 9, '2023-04-05', 12),
+(3, 10, '2023-04-01', 8), (3, 10, '2023-04-02', 10), (3, 10, '2023-04-03', 12), (3, 10, '2023-04-04', 9), (3, 10, '2023-04-05', 11),
+
+-- Cosechadores 11-15
+(3, 11, '2023-04-01', 7), (3, 11, '2023-04-02', 9), (3, 11, '2023-04-03', 11), (3, 11, '2023-04-04', 8), (3, 11, '2023-04-05', 10),
+(3, 12, '2023-04-01', 9), (3, 12, '2023-04-02', 11), (3, 12, '2023-04-03', 13), (3, 12, '2023-04-04', 10), (3, 12, '2023-04-05', 12),
+(3, 13, '2023-04-01', 8), (3, 13, '2023-04-02', 10), (3, 13, '2023-04-03', 12), (3, 13, '2023-04-04', 9), (3, 13, '2023-04-05', 11),
+(3, 14, '2023-04-01', 7), (3, 14, '2023-04-02', 9), (3, 14, '2023-04-03', 11), (3, 14, '2023-04-04', 8), (3, 14, '2023-04-05', 10),
+(3, 15, '2023-04-01', 9), (3, 15, '2023-04-02', 11), (3, 15, '2023-04-03', 13), (3, 15, '2023-04-04', 10), (3, 15, '2023-04-05', 12),
+
+-- Cosechadores 16-20
+(3, 16, '2023-04-01', 8), (3, 16, '2023-04-02', 10), (3, 16, '2023-04-03', 12), (3, 16, '2023-04-04', 9), (3, 16, '2023-04-05', 11),
+(3, 17, '2023-04-01', 7), (3, 17, '2023-04-02', 9), (3, 17, '2023-04-03', 11), (3, 17, '2023-04-04', 8), (3, 17, '2023-04-05', 10),
+(3, 18, '2023-04-01', 9), (3, 18, '2023-04-02', 11), (3, 18, '2023-04-03', 13), (3, 18, '2023-04-04', 10), (3, 18, '2023-04-05', 12),
+(3, 19, '2023-04-01', 8), (3, 19, '2023-04-02', 10), (3, 19, '2023-04-03', 12), (3, 19, '2023-04-04', 9), (3, 19, '2023-04-05', 11),
+(3, 20, '2023-04-01', 7), (3, 20, '2023-04-02', 9), (3, 20, '2023-04-03', 11), (3, 20, '2023-04-04', 8), (3, 20, '2023-04-05', 10);
