@@ -148,7 +148,7 @@ export default function VistaCuadrilla() {
               </div>
             </div>
             <div className="bg-gray-50 p-4 flex justify-between items-center">
-              <GenerarQR id={cosechador.id} rut={cosechador.rut} nombre={cosechador.nombre} />
+              <GenerarQR id={cosechador.id} rut={cosechador.documento} nombre={cosechador.nombre} />
               <button className="px-4 py-1 border rounded-sm text-sm font-medium hover:bg-gray-100">
                 Gestionar
               </button>
