@@ -49,7 +49,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/encargados", {
+      const response = await fetch("http://192.168.0.2:8080/encargados", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

@@ -39,7 +39,7 @@ export default function AsignacionCosechadores() {
 
   const fetchCosechadores = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cosechadores");
+      const response = await fetch("http://192.168.0.2:8080/cosechadores");
       const data = await response.json();
       setCosechadores(data);
     } catch (err) {
@@ -50,7 +50,7 @@ export default function AsignacionCosechadores() {
 
   const fetchCuadrillas = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cuadrillas");
+      const response = await fetch("http://192.168.0.2:8080/cuadrillas");
       const data = await response.json();
       setCuadrillas(data);
     } catch (err) {
@@ -120,7 +120,7 @@ export default function AsignacionCosechadores() {
     if (!idCuadrilla) return;
     
     try {
-      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
+      const response = await fetch(`http://192.168.0.2:8080/cosechadores/${cosechadorId}/asignar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cuadrilla: parseInt(idCuadrilla) }),
@@ -139,7 +139,7 @@ export default function AsignacionCosechadores() {
 
   const handleQuitarCuadrilla = async (cosechadorId) => {
     try {
-      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
+      const response = await fetch(`http://192.168.0.2:8080/cosechadores/${cosechadorId}/asignar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cuadrilla: null }),
@@ -167,8 +167,8 @@ export default function AsignacionCosechadores() {
 
     const isEdit = modalAbierto.editar;
     const url = isEdit 
-      ? `http://localhost:8080/cosechadores/${cosechadorSeleccionado.id}`
-      : "http://localhost:8080/cosechadores";
+      ? `http://192.168.0.2:8080/cosechadores/${cosechadorSeleccionado.id}`
+      : "http://192.168.0.2:8080/cosechadores";
     
     const method = isEdit ? "PUT" : "POST";
 
@@ -201,7 +201,7 @@ export default function AsignacionCosechadores() {
     if (!cosechadorSeleccionado) return;
     
     try {
-      const response = await fetch(`http://localhost:8080/cosechadores/${cosechadorSeleccionado.id}`, {
+      const response = await fetch(`http://192.168.0.2:8080/cosechadores/${cosechadorSeleccionado.id}`, {
         method: "DELETE",
       });
 

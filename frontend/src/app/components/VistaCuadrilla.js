@@ -20,7 +20,7 @@ export default function VistaCuadrilla() {
       setLoading(false)
       return
     }
-    fetch(`http://localhost:8080/mi-cuadrilla/${user.id}`)
+    fetch(`http://192.168.0.2:8080/mi-cuadrilla/${user.id}`)
       .then(res => {
         if (!res.ok) throw new Error("No tienes cuadrilla asignada")
         return res.json()

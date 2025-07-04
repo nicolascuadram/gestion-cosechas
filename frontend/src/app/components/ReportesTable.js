@@ -11,7 +11,7 @@ export default function ReportesTable() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/administrador/reportes")
+    fetch("http://192.168.0.2:8080/administrador/reportes")
       .then((res) => {
         if (!res.ok) throw new Error("Error al cargar reportes");
         return res.json();

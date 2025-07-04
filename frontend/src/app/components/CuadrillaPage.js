@@ -17,13 +17,13 @@ export default function CuadrillaPage() {
 
   // Fetch data
   useEffect(() => {
-    fetch("http://localhost:8080/cuadrillas")
+    fetch("http://192.168.0.2:8080/cuadrillas")
       .then(res => res.json())
       .then(setCuadrillas)
-    fetch("http://localhost:8080/encargados")
+    fetch("http://192.168.0.2:8080/encargados")
       .then(res => res.json())
       .then(setEncargados)
-    fetch("http://localhost:8080/cosechadores")
+    fetch("http://192.168.0.2:8080/cosechadores")
       .then(res => res.json())
       .then(setCosechadores)
   }, [])
@@ -39,8 +39,8 @@ export default function CuadrillaPage() {
     try {
       const method = editCuadrilla ? "PUT" : "POST"
       const url = editCuadrilla
-        ? `http://localhost:8080/cuadrillas/${editCuadrilla.id}`
-        : "http://localhost:8080/cuadrillas"
+        ? `http://192.168.0.2::8080/cuadrillas/${editCuadrilla.id}`
+        : "http://192.168.0.2:8080/cuadrillas"
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -52,7 +52,7 @@ export default function CuadrillaPage() {
         return
       }
       // Refrescar cuadrillas
-      fetch("http://localhost:8080/cuadrillas")
+      fetch("http://192.168.0.2:8080/cuadrillas")
         .then(res => res.json())
         .then(setCuadrillas)
       setModalOpen(false)
@@ -66,20 +66,20 @@ export default function CuadrillaPage() {
   // Eliminar cuadrilla
   const handleDelete = async (id) => {
     if (!window.confirm("¿Eliminar cuadrilla?")) return
-    await fetch(`http://localhost:8080/cuadrillas/${id}`, { method: "DELETE" })
+    await fetch(`http://192.168.0.2:8080/cuadrillas/${id}`, { method: "DELETE" })
     setCuadrillas(cuadrillas.filter(c => c.id !== id))
   }
 
   // Asignar cosechador a cuadrilla
   const handleAsignarCosechador = async () => {
     if (!cosechadorSeleccionado) return
-    await fetch(`http://localhost:8080/cosechadores/${cosechadorSeleccionado}/asignar`, {
+    await fetch(`http://192.168.0.2:8080/cosechadores/${cosechadorSeleccionado}/asignar`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_cuadrilla: asignarId }),
     })
     // Refrescar cosechadores
-    fetch("http://localhost:8080/cosechadores")
+    fetch("http://192.168.0.2:8080/cosechadores")
       .then(res => res.json())
       .then(setCosechadores)
     setCosechadorSeleccionado("")
@@ -88,12 +88,12 @@ export default function CuadrillaPage() {
 
   // Quitar cosechador de cuadrilla
   const handleQuitarCosechador = async (cosechadorId) => {
-    await fetch(`http://localhost:8080/cosechadores/${cosechadorId}/asignar`, {
+    await fetch(`http://192.168.0.2:8080/cosechadores/${cosechadorId}/asignar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cuadrilla: null }),
     });
-    fetch("http://localhost:8080/cosechadores")
+    fetch("http://192.168.0.2:8080/cosechadores")
       .then(res => res.json())
       .then(setCosechadores)
   }

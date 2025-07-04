@@ -15,7 +15,7 @@ export default function EncargadosTable() {
   const router = useRouter()
 
   useEffect(() => {
-    fetch("http://localhost:8080/encargados")
+    fetch("http://192.168.0.2:8080/encargados")
       .then(res => res.json())
       .then(data => setEncargados(data))
       .catch(() => setEncargados([]))
@@ -177,7 +177,7 @@ export default function EncargadosTable() {
                 ev.preventDefault()
                 setEditError("")
                 try {
-                  const res = await fetch(`http://localhost:8080/encargados/${editEncargado.id}`, {
+                  const res = await fetch(`http://192.168.0.2:8080/encargados/${editEncargado.id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(editForm),
@@ -252,7 +252,7 @@ export default function EncargadosTable() {
                 onClick={async () => {
                   setDeleteError("")
                   try {
-                    const res = await fetch(`http://localhost:8080/encargados/${deleteId}`, {
+                    const res = await fetch(`http://192.168.0.2:8080/encargados/${deleteId}`, {
                       method: "DELETE"
                     })
                     if (res.status === 204) {

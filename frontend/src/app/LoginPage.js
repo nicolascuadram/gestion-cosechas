@@ -32,7 +32,7 @@ export default function LoginPage() {
     // Login real
     try {
       console.log("Iniciando sesión con:", { email, password })
-      const res = await fetch("http://localhost:8080/login", {
+      const res = await fetch("http://192.168.0.2:8080/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

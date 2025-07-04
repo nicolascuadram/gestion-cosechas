@@ -21,8 +21,8 @@ export default function EstadisticasDashboard() {
     const fetchInitialData = async () => {
       try {
         const [resCosechas, resTipos] = await Promise.all([
-          fetch("http://localhost:8080/administrador/cosechas/list"),
-          fetch("http://localhost:8080/administrador/getTipo_cosecha")
+          fetch("http://192.168.0.2:8080/administrador/cosechas/list"),
+          fetch("http://192.168.0.2:8080/administrador/getTipo_cosecha")
         ]);
 
         const [dataCosechas, dataTipos] = await Promise.all([
@@ -46,7 +46,7 @@ useEffect(() => {
 
     setLoading(true);
     try {
-      const baseUrl = "http://localhost:8080";
+      const baseUrl = "http://192.168.0.2:8080";
       const cosechaParam = selectedCosecha ? `/${selectedCosecha}` : "";
 
       // Si hay una cosecha seleccionada
@@ -123,7 +123,6 @@ useEffect(() => {
       <div className="flex justify-between items-start mb-4">
         <div>
           <h2 className="text-xl font-bold">Dashboard de Estadísticas</h2>
-          <p className="text-[#737373]">Visualiza el rendimiento de las cosechas</p>
         </div>
       </div>
 
