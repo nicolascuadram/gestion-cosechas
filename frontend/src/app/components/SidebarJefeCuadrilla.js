@@ -5,7 +5,6 @@ import Link from "next/link"
 
 const menuItems = [
   { id: "cuadrilla", label: "Mi Cuadrilla", icon: <Users className="h-5 w-5" /> },
-  { id: "gestion", label: "Gestión", icon: <FileText className="h-5 w-5" /> },
   { id: "escaneo", label: "Escanear QR", icon: <Leaf className="h-5 w-5" /> },
 ]
 
